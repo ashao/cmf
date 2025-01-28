@@ -1,15 +1,15 @@
 
 name: Run style and unit tests for CMF
 
-on:
-  pull_request:
+on: push
 
-env: SOURCE_FOLDERS: "examples cmflib server"
+env:
+  SOURCE_FOLDERS: "examples cmflib server"
 
 jobs:
   run-tests:
     name: Test with Python ${{matrix.python_version}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
