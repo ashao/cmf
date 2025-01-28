@@ -16,8 +16,8 @@
 
 import argparse
 
-from cmflib.commands.artifact import pull, push, list
 from cmflib.cli.utils import *
+from cmflib.commands.artifact import list, pull, push
 
 SUB_COMMANDS = [pull, push, list]
 

@@ -1,6 +1,8 @@
-from cmflib import cmfquery
-import pandas as pd
 from typing import Dict
+
+import pandas as pd
+
+from cmflib import cmfquery
 
 
 def query_execution_lineage_d3force(

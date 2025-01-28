@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
-from cmflib.cli import main
-
 # this is temporary - need to remove after TripleDES warning goes away from paramiko
 import warnings
+
+from cmflib.cli import main
+
 warnings.filterwarnings(action='ignore', module='.*paramiko.*')
 
 if __name__ == '__main__':

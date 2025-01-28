@@ -16,27 +16,25 @@
 
 #!/usr/bin/env python3
 import argparse
-import os
 import json
+import os
+
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import find_root
+from cmflib.cmf_exception_handling import (CmfNotConfigured,
+                                           CmfServerNotAvailable,
+                                           ExecutionIDNotFound,
+                                           ExecutionsAlreadyExists,
+                                           FileNotFound, InternalServerError,
+                                           InvalidTensorboardFilePath,
+                                           MlmdFilePushSuccess,
+                                           PipelineNotFound,
+                                           TensorboardPushFailure,
+                                           TensorboardPushSuccess,
+                                           UpdateCmfVersion)
 from cmflib.server_interface import server_interface
 from cmflib.utils.cmf_config import CmfConfig
-from cmflib.cmf_exception_handling import (
-    TensorboardPushSuccess,
-    TensorboardPushFailure,
-    MlmdFilePushSuccess,
-    ExecutionsAlreadyExists,
-    FileNotFound,
-    ExecutionIDNotFound,
-    PipelineNotFound,
-    UpdateCmfVersion,
-    CmfServerNotAvailable,
-    InternalServerError,
-    CmfNotConfigured,
-    InvalidTensorboardFilePath,
-)
 
 
 # This class pushes mlmd file to cmf-server

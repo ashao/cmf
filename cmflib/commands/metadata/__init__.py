@@ -16,8 +16,8 @@
 
 import argparse
 
-from cmflib.commands.metadata import push, pull, export
 from cmflib.cli.utils import *
+from cmflib.commands.metadata import export, pull, push
 
 SUB_COMMANDS = [push, pull, export]
 

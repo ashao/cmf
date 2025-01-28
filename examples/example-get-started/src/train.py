@@ -15,12 +15,14 @@
 ###
 
 import os
-import sys
-import yaml
 import pickle
+import sys
+
 import click
 import numpy as np
+import yaml
 from sklearn.ensemble import RandomForestClassifier
+
 from cmflib import cmf
 
 __all__ = ["train"]

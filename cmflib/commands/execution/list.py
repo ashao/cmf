@@ -17,19 +17,16 @@
 import argparse
 import os
 import textwrap
-import pandas as pd
 
-from cmflib.cli.command import CmdBase
-from cmflib import cmfquery
+import pandas as pd
 from tabulate import tabulate
-from cmflib.cmf_exception_handling import (
-    PipelineNotFound,
-    FileNotFound,
-    DuplicateArgumentNotAllowed,
-    MissingArgument,
-    MsgSuccess,
-    ExecutionsNotFound,
-)
+
+from cmflib import cmfquery
+from cmflib.cli.command import CmdBase
+from cmflib.cmf_exception_handling import (DuplicateArgumentNotAllowed,
+                                           ExecutionsNotFound, FileNotFound,
+                                           MissingArgument, MsgSuccess,
+                                           PipelineNotFound)
 
 
 class CmdExecutionList(CmdBase):

@@ -17,20 +17,13 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from cmflib.cmf_exception_handling import (
-    Neo4jArgumentNotProvided,
-    CmfInitComplete,
-    CmfInitFailed,
-)
+
 from cmflib.cli.command import CmdBase
-from cmflib.dvc_wrapper import (
-    git_quiet_init,
-    git_checkout_new_branch,
-    git_initial_commit,
-    git_add_remote,
-    dvc_quiet_init,
-    dvc_add_remote_repo,
-)
+from cmflib.cmf_exception_handling import (CmfInitComplete, CmfInitFailed,
+                                           Neo4jArgumentNotProvided)
+from cmflib.dvc_wrapper import (dvc_add_remote_repo, dvc_quiet_init,
+                                git_add_remote, git_checkout_new_branch,
+                                git_initial_commit, git_quiet_init)
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
 

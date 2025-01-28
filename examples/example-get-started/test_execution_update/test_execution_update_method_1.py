@@ -1,6 +1,4 @@
-from cmflib import cmf
-from cmflib import cmfquery
-
+from cmflib import cmf, cmfquery
 
 metawriter = cmf.Cmf("mlmd", "test-execution-update")
 query = cmfquery.CmfQuery("mlmd")

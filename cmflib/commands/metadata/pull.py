@@ -17,23 +17,22 @@
 #!/usr/bin/env python3
 import argparse
 import os
+
 from cmflib import cmf_merger
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import find_root
+from cmflib.cmf_exception_handling import (CmfNotConfigured,
+                                           CmfServerNotAvailable,
+                                           DirectoryNotfound,
+                                           ExecutionIDNotFound,
+                                           FileNameNotfound,
+                                           InternalServerError,
+                                           MlmdFilePullFailure,
+                                           MlmdFilePullSuccess,
+                                           MlmdNotFoundOnServer,
+                                           PipelineNotFound)
 from cmflib.server_interface import server_interface
 from cmflib.utils.cmf_config import CmfConfig
-from cmflib.cmf_exception_handling import (
-    PipelineNotFound,
-    CmfNotConfigured,
-    ExecutionIDNotFound,
-    MlmdNotFoundOnServer,
-    MlmdFilePullSuccess,
-    CmfServerNotAvailable,
-    InternalServerError,
-    MlmdFilePullFailure,
-    DirectoryNotfound,
-    FileNameNotfound,
-)
 
 
 # This class pulls mlmd file from cmf-server

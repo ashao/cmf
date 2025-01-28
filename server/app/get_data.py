@@ -1,10 +1,13 @@
-from cmflib import cmfquery, cmf_merger
-import pandas as pd
 import json
 import os
 import typing as t
+
+import pandas as pd
 from fastapi.concurrency import run_in_threadpool
-from server.app.query_artifact_lineage_d3force import query_artifact_lineage_d3force
+
+from cmflib import cmf_merger, cmfquery
+from server.app.query_artifact_lineage_d3force import \
+    query_artifact_lineage_d3force
 from server.app.query_list_of_executions import query_list_of_executions
 
 

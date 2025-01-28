@@ -20,14 +20,8 @@ from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 
-from cmflib.contrib.auto_logging_v01 import (
-    Context,
-    Dataset,
-    Parameters,
-    cli_run,
-    prepare_workspace,
-    step,
-)
+from cmflib.contrib.auto_logging_v01 import (Context, Dataset, Parameters,
+                                             cli_run, prepare_workspace, step)
 
 
 @step()

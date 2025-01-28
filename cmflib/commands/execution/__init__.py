@@ -16,8 +16,8 @@
 
 import argparse
 
-from cmflib.commands.execution import list
 from cmflib.cli.utils import *
+from cmflib.commands.execution import list
 
 SUB_COMMANDS = [list]
 

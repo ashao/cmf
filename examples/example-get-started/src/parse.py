@@ -14,17 +14,19 @@
 # limitations under the License.
 ###
 
+import collections
+import gzip
 import io
 import os
+import random
 import re
 import sys
-import yaml
-import gzip
-import random
 import typing as t
-import collections
-import click
 import xml.etree.ElementTree
+
+import click
+import yaml
+
 from cmflib import cmf
 
 __all__ = ["parse"]

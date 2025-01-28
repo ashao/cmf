@@ -21,14 +21,10 @@ import os
 
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
-from cmflib.cmf_exception_handling import (
-    PipelineNotFound,
-    FileNotFound,
-    DuplicateArgumentNotAllowed,
-    MissingArgument,
-    NoChangesMadeInfo,
-    MetadataExportToJson,
-)
+from cmflib.cmf_exception_handling import (DuplicateArgumentNotAllowed,
+                                           FileNotFound, MetadataExportToJson,
+                                           MissingArgument, NoChangesMadeInfo,
+                                           PipelineNotFound)
 
 
 # This class export local mlmd data to a json file

@@ -1,7 +1,8 @@
 import numpy as np
 import torch
-from .strategy import Strategy
 from torch.nn.functional import normalize
+
+from .strategy import Strategy
 
 
 class EntropySampling(Strategy):

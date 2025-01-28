@@ -14,8 +14,9 @@
 # limitations under the License.
 ###
 
-import requests
 import json
+
+import requests
 
 
 # This function posts mlmd data to mlmd_push api on cmf-server

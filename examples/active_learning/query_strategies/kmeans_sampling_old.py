@@ -1,6 +1,7 @@
 import numpy as np
-from .strategy import Strategy
 from sklearn.cluster import KMeans
+
+from .strategy import Strategy
 
 
 class KMeansSampling(Strategy):

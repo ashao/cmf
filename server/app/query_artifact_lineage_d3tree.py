@@ -1,9 +1,9 @@
 import time
-from cmflib import cmfquery
-from collections import deque, defaultdict
-
+from collections import defaultdict, deque
 # from get_data import get_all_artifact_ids, get_all_exe_ids
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
+from cmflib import cmfquery
 from server.app.utils import modify_arti_name
 
 

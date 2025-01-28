@@ -1,7 +1,9 @@
-import pandas as pd
-from cmflib import cmfquery
-import warnings
 import typing as t
+import warnings
+
+import pandas as pd
+
+from cmflib import cmfquery
 
 warnings.filterwarnings("ignore")
 

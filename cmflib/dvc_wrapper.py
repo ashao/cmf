@@ -16,9 +16,10 @@
 
 import os
 import subprocess
+from typing import List, Optional
+
 import dvc.api
 import dvc.exceptions
-from typing import List, Optional
 
 
 def check_git_remote() -> bool:

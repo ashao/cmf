@@ -17,9 +17,8 @@
 """Main parser for the cmf cli"""
 import argparse
 
-from cmflib.commands import artifact, metadata, init, execution, pipeline
-
 from cmflib.cli import CmfParserError
+from cmflib.commands import artifact, execution, init, metadata, pipeline
 
 COMMANDS = [artifact, metadata, init, execution, pipeline]
 

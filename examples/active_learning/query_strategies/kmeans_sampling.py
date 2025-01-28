@@ -1,8 +1,9 @@
 import numpy as np
-from .strategy import Strategy
-from sklearn.cluster import KMeans
 import torch
+from sklearn.cluster import KMeans
 from torch.nn.functional import normalize
+
+from .strategy import Strategy
 
 
 class KMeansSampling(Strategy):

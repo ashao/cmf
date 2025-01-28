@@ -14,14 +14,14 @@
 # limitations under the License.
 ###
 
-import os
-import requests
-
 # import urllib3
 # urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import hashlib
+import os
 import time
 from urllib.parse import urlparse
+
+import requests
 
 
 def generate_cached_url(url, cache):

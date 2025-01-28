@@ -16,12 +16,14 @@
 
 import json
 import os
-from cmflib import cmf
 import traceback
+from typing import Union
+
 from ml_metadata.errors import AlreadyExistsError
 from ml_metadata.metadata_store import metadata_store
 from ml_metadata.proto import metadata_store_pb2 as mlpb
-from typing import Union
+
+from cmflib import cmf
 
 
 def parse_json_to_mlmd(

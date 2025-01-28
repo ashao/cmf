@@ -1,5 +1,4 @@
-from cmflib import cmf
-from cmflib import cmfquery
+from cmflib import cmf, cmfquery
 
 query = cmfquery.CmfQuery("mlmd")
 if len(query.get_pipeline_names()) == 0:

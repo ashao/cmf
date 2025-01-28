@@ -21,23 +21,17 @@ import re
 
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
-from cmflib.cli.utils import check_minio_server
-from cmflib.utils.helper_functions import generate_osdf_token
-from cmflib.utils.dvc_config import DvcConfig
-from cmflib.dvc_wrapper import dvc_push
-from cmflib.dvc_wrapper import dvc_add_attribute
-from cmflib.cli.utils import find_root
+from cmflib.cli.utils import check_minio_server, find_root
+from cmflib.cmf_exception_handling import (ArtifactPushSuccess,
+                                           CmfNotConfigured,
+                                           DuplicateArgumentNotAllowed,
+                                           ExecutionsNotFound, FileNotFound,
+                                           Minios3ServerInactive,
+                                           MissingArgument, PipelineNotFound)
+from cmflib.dvc_wrapper import dvc_add_attribute, dvc_push
 from cmflib.utils.cmf_config import CmfConfig
-from cmflib.cmf_exception_handling import (
-    PipelineNotFound,
-    Minios3ServerInactive,
-    FileNotFound,
-    ExecutionsNotFound,
-    CmfNotConfigured,
-    ArtifactPushSuccess,
-    MissingArgument,
-    DuplicateArgumentNotAllowed,
-)
+from cmflib.utils.dvc_config import DvcConfig
+from cmflib.utils.helper_functions import generate_osdf_token
 
 
 class CmdArtifactPush(CmdBase):

@@ -14,8 +14,8 @@
 # limitations under the License.
 ###
 
-import subprocess
 import os
+import subprocess
 
 
 def fix_subparsers(subparsers):

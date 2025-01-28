@@ -14,12 +14,14 @@
 # limitations under the License.
 ###
 
-from cmflib import cmf
-import random
-import pandas as pd
 import os
+import random
 import string
 from shutil import rmtree
+
+import pandas as pd
+
+from cmflib import cmf
 
 folder_path = "artifacts/raw_data"
 

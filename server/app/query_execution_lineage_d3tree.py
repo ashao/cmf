@@ -1,6 +1,8 @@
-from cmflib import cmfquery
-from collections import deque, defaultdict
+from collections import defaultdict, deque
+
 import pandas as pd
+
+from cmflib import cmfquery
 
 
 class UniqueQueue:

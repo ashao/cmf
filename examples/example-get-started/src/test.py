@@ -14,12 +14,14 @@
 # limitations under the License.
 ###
 import collections
-import os
 import json
 import math
+import os
 import pickle
+
 import click
 import sklearn.metrics as metrics
+
 from cmflib import cmf
 
 __all__ = ["test"]

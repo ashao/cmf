@@ -23,52 +23,46 @@
 # ### Call the import statements
 
 import glob
-from skimage import io
-from skimage.transform import resize
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import gridspec
-from IPython.display import Markdown, display
+import sys
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 #!pip install torch
 #!pip install torchsummary
 import torch
-import torch.utils.data
-from torch.autograd import Variable
 import torch.nn as nn
+import torch.utils.data
+from IPython.display import Markdown, display
+from matplotlib import gridspec
+from skimage import io
+from skimage.transform import resize
+from torch.autograd import Variable
 from torchsummary import summary
 
-import pandas as pd
-import sys
-
 sys.path.append("../")
-import os
-
-#!pip install aif360
-from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric
-from aif360.metrics import ClassificationMetric
-
-# from aif360.algorithms.preprocessing.reweighing import Reweighing
-from aif360.algorithms.inprocessing.adversarial_debiasing import AdversarialDebiasing
-from aif360.metrics import BinaryLabelDatasetMetric
-from IPython import get_ipython
-
-# import troch related libraries
-import torchvision
-from torchvision import datasets, models, transforms
-import torch.optim as optim
-from torch.optim import lr_scheduler
-import torch.backends.cudnn as cudnn
-import time
-import copy
-
-# importing cmf for pipeline logging
-from cmflib import cmf
 import collections
-from cmflib import cmfquery
+import copy
+import os
+import time
 
 import tensorflow as tf
+import torch.backends.cudnn as cudnn
+import torch.optim as optim
+# import troch related libraries
+import torchvision
+# from aif360.algorithms.preprocessing.reweighing import Reweighing
+from aif360.algorithms.inprocessing.adversarial_debiasing import \
+    AdversarialDebiasing
+#!pip install aif360
+from aif360.datasets import BinaryLabelDataset
+from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
+from IPython import get_ipython
+from torch.optim import lr_scheduler
+from torchvision import datasets, models, transforms
+
+# importing cmf for pipeline logging
+from cmflib import cmf, cmfquery
 
 tf.compat.v1.disable_eager_execution()
 tf.__version__

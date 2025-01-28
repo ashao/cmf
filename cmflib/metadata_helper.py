@@ -14,15 +14,16 @@
 ###
 
 
+import functools
 import os
 import sys
 import typing as t
+from ipaddress import IPv4Address, ip_address
 from time import sleep
-from ml_metadata.proto import metadata_store_pb2
-from ml_metadata.metadata_store import metadata_store
-from ipaddress import ip_address, IPv4Address
 from typing import List
-import functools
+
+from ml_metadata.metadata_store import metadata_store
+from ml_metadata.proto import metadata_store_pb2
 
 
 def value_to_mlmd_value(value) -> metadata_store_pb2.Value:

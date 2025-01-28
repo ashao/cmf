@@ -16,40 +16,37 @@
 
 # ### Call the import statements
 
-import os
 import glob
-from skimage import io
-from skimage.transform import resize
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-from matplotlib import gridspec
-from IPython.display import Markdown, display
-from IPython import get_ipython
+import os
+import sys
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 # get_ipython().system('pip install torch')
 # get_ipython().system('pip install torchsummary')
 import torch
-import torch.utils.data
-from torch.autograd import Variable
 import torch.nn as nn
+import torch.utils.data
+from IPython import get_ipython
+from IPython.display import Markdown, display
+from matplotlib import gridspec
+from skimage import io
+from skimage.transform import resize
+from torch.autograd import Variable
 from torchsummary import summary
-
-import pandas as pd
-import sys
 
 sys.path.append("../")
 
+import tensorflow as tf
+from aif360.algorithms.inprocessing.adversarial_debiasing import \
+    AdversarialDebiasing
+from aif360.algorithms.preprocessing.reweighing import Reweighing
 # get_ipython().system('pip install aif360')
 from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric
-from aif360.metrics import ClassificationMetric
-from aif360.algorithms.preprocessing.reweighing import Reweighing
-from aif360.algorithms.inprocessing.adversarial_debiasing import AdversarialDebiasing
-from cmflib import cmf
-from cmflib import cmfquery
+from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 
-import tensorflow as tf
+from cmflib import cmf, cmfquery
 
 tf.compat.v1.disable_eager_execution()
 tf.__version__

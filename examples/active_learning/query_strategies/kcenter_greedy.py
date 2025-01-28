@@ -1,7 +1,8 @@
 import numpy as np
-from .strategy import Strategy
 from sklearn.neighbors import NearestNeighbors
 from tqdm import tqdm
+
+from .strategy import Strategy
 
 
 class KCenterGreedy(Strategy):

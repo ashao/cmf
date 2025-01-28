@@ -1,7 +1,9 @@
+import heapq
+
 from ray import tune
 from ray.tune import Callback
+
 from cmflib import cmf
-import heapq
 
 
 class CmfRayLogger(Callback):

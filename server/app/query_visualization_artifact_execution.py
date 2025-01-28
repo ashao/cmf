@@ -1,6 +1,7 @@
-from cmflib import cmfquery
-from collections import deque, defaultdict
 import warnings
+from collections import defaultdict, deque
+
+from cmflib import cmfquery
 
 warnings.filterwarnings("ignore")
 

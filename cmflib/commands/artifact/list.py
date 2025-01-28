@@ -16,21 +16,18 @@
 
 import argparse
 import os
-import pandas as pd
 import textwrap
+from typing import List, Union
 
+import pandas as pd
 from tabulate import tabulate
-from typing import Union, List
-from cmflib.cli.command import CmdBase
+
 from cmflib import cmfquery
-from cmflib.cmf_exception_handling import (
-    PipelineNotFound,
-    FileNotFound,
-    ArtifactNotFound,
-    DuplicateArgumentNotAllowed,
-    MissingArgument,
-    MsgSuccess,
-)
+from cmflib.cli.command import CmdBase
+from cmflib.cmf_exception_handling import (ArtifactNotFound,
+                                           DuplicateArgumentNotAllowed,
+                                           FileNotFound, MissingArgument,
+                                           MsgSuccess, PipelineNotFound)
 
 
 class CmdArtifactsList(CmdBase):

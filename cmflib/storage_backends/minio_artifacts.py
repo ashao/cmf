@@ -15,8 +15,10 @@
 ###
 
 import os
+
 from minio import Minio
 from minio.error import S3Error
+
 from cmflib.cmf_exception_handling import BucketNotFound
 
 

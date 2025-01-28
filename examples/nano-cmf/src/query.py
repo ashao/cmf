@@ -1,8 +1,10 @@
-import click
 import typing as t
+
+import click
 import pandas as pd
-from cmflib import cmfquery
 from tabulate import tabulate
+
+from cmflib import cmfquery
 
 __all__ = ["query"]
 

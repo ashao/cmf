@@ -13,10 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###
-from neo4j import GraphDatabase
-import typing as t
 import re
+import typing as t
+
 from ml_metadata.proto import metadata_store_pb2 as mlpb
+from neo4j import GraphDatabase
 
 
 class GraphDriver:

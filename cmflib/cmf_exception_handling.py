@@ -15,7 +15,7 @@
 ###
 
 #!/usr/bin/env python3
-from typing import Optional, List
+from typing import List, Optional
 
 
 class CmfResponse(Exception):

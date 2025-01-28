@@ -14,16 +14,18 @@
 # limitations under the License.
 ###
 
-import os
-import sys
-import yaml
-import pickle
-import click
 import collections
+import os
+import pickle
+import sys
+
+import click
 import numpy as np
 import pandas as pd
 import scipy.sparse as sparse
+import yaml
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
 from cmflib import cmf
 
 __all__ = ["featurize"]

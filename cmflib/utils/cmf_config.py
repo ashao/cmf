@@ -14,9 +14,9 @@
 # limitations under the License.
 ###
 
+import base64
 import configparser
 import os
-import base64
 
 
 class CmfConfig:

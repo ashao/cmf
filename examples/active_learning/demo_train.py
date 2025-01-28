@@ -1,12 +1,14 @@
 import argparse
+from pprint import pprint
+
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from utils import get_dataset, get_net, get_strategy, get_trained_net
-from pprint import pprint
-from cmflib import cmf
 from linear_regression import LinearPredictor
-import matplotlib.pyplot as plt
-import matplotlib
+
+from cmflib import cmf
+from utils import get_dataset, get_net, get_strategy, get_trained_net
 
 # matplotlib.use('Agg')
 parser = argparse.ArgumentParser()

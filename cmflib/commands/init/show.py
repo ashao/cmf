@@ -20,9 +20,9 @@ import os
 
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import find_root
+from cmflib.cmf_exception_handling import CmfInitShow, CmfNotConfigured
 from cmflib.dvc_wrapper import dvc_get_config
 from cmflib.utils.cmf_config import CmfConfig
-from cmflib.cmf_exception_handling import CmfNotConfigured, CmfInitShow
 
 
 class CmdInitShow(CmdBase):

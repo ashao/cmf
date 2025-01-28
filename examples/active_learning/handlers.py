@@ -1,7 +1,7 @@
 import numpy as np
-from torchvision import transforms
-from torch.utils.data import Dataset
 from PIL import Image
+from torch.utils.data import Dataset
+from torchvision import transforms
 
 
 class MNIST_Handler(Dataset):

@@ -14,10 +14,10 @@
 # limitations under the License.
 ###
 
-import os
-import sys
-import subprocess
 import json
+import os
+import subprocess
+import sys
 
 
 def is_url(url) -> bool:
@@ -111,8 +111,8 @@ def generate_osdf_token(key_id, key_path, key_issuer) -> str:
 
     # for SciToken Generation & Validation
     import scitokens
-    from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import serialization
 
     dynamic_pass = ""  # Initialize Blank dynamic Password
 

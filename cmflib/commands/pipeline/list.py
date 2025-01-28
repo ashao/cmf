@@ -17,14 +17,11 @@
 import argparse
 import os
 
-from cmflib.cli.command import CmdBase
 from cmflib import cmfquery
-from cmflib.cmf_exception_handling import (
-    FileNotFound,
-    DuplicateArgumentNotAllowed,
-    MissingArgument,
-    MsgSuccess,
-)
+from cmflib.cli.command import CmdBase
+from cmflib.cmf_exception_handling import (DuplicateArgumentNotAllowed,
+                                           FileNotFound, MissingArgument,
+                                           MsgSuccess)
 
 
 class CmdPipelineList(CmdBase):
