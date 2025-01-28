@@ -4,16 +4,20 @@ import pandas as pd
 from cmflib import cmfquery
 from tabulate import tabulate
 
-__all__ = ['query']
+__all__ = ["query"]
 
 
 def _print_executions_in_stage(cmf_query: cmfquery.CmfQuery, stage_name: str) -> None:
-    print('\n')
-    print('\n')
+    print("\n")
+    print("\n")
     df: pd.DataFrame = cmf_query.get_all_executions_in_stage(stage_name)
     # dropping Python_Env value in query output as it is very big in size most of the time
-    df.drop(columns=['Git_Start_Commit', 'Git_End_Commit', 'Python_Env'], inplace=True, axis=1)
-    print(tabulate(df, headers='keys', tablefmt='psql'))
+    df.drop(
+        columns=["Git_Start_Commit", "Git_End_Commit", "Python_Env"],
+        inplace=True,
+        axis=1,
+    )
+    print(tabulate(df, headers="keys", tablefmt="psql"))
 
 
 def query(mlmd_path: str) -> None:
@@ -26,10 +30,10 @@ def query(mlmd_path: str) -> None:
 
 
 @click.command()
-@click.argument('mlmd_path', required=True, type=str)
+@click.argument("mlmd_path", required=True, type=str)
 def query_cli(mlmd_path: str):
     query(mlmd_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     query_cli()

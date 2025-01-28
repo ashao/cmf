@@ -26,15 +26,18 @@ parser = argparse.ArgumentParser()
 File name of the cmf metadata file . Pass the file name if the pipeline has been recorded
 with CMF explicit log statements , to record metadata not part of dvc.lock file
 """
-parser.add_argument('--cmf_filename', type=str, default="mlmd", help="cmf filename")
+parser.add_argument("--cmf_filename", type=str, default="mlmd", help="cmf filename")
 args = parser.parse_args()
 
 """
 Parses the string and returns, pipeline name, context name and execution name
 """
-def get_cmf_hierarchy(execution_lineage:str):
-    cmf_levels = execution_lineage.split(',')
+
+
+def get_cmf_hierarchy(execution_lineage: str):
+    cmf_levels = execution_lineage.split(",")
     return cmf_levels[-1], cmf_levels[1], cmf_levels[0]
+
 
 """
 Ingest the metadata into cmf
@@ -46,13 +49,17 @@ args
     execution_exist : True if it exeist, False otherwise
     metawrite: cmf object 
 """
-def ingest_metadata(execution_lineage:str, metadata:dict, execution_exist:bool, metawriter:cmf.Cmf) :
+
+
+def ingest_metadata(
+    execution_lineage: str, metadata: dict, execution_exist: bool, metawriter: cmf.Cmf
+):
     pipeline_name, context_name, execution = get_cmf_hierarchy(execution_lineage)
     _ = metawriter.create_context(pipeline_stage=context_name)
 
     if execution_exist:
         _ = metawriter.update_execution(int(execution))
-    else :
+    else:
         _ = metawriter.create_execution(execution)
 
     for k, v in metadata.items():
@@ -63,7 +70,8 @@ def ingest_metadata(execution_lineage:str, metadata:dict, execution_exist:bool, 
             for out in v:
                 metawriter.log_dataset_with_version(out["path"], out["md5"], "output")
 
-#Query mlmd to get all the executions and its commands
+
+# Query mlmd to get all the executions and its commands
 cmd_exe = {}
 cmf_query = cmfquery.CmfQuery(args.cmf_filename)
 pipelines: t.List[str] = cmf_query.get_pipeline_names()
@@ -77,50 +85,52 @@ for pipeline in pipelines:
         eg- exe_step = ['demo_eval.py', '--trained_model', 'data/model-1', '--enable_df', 'True', '--round', '1']
         """
         for index, row in exe_df.iterrows():
-            exe_step = row['Execution']
-            '''
+            exe_step = row["Execution"]
+            """
             if already same execution command has been captured previously use the latest
             execution id to associate the new metadata
-            '''
+            """
             if None is cmd_exe.get(exe_step, None):
-                cmd_exe[exe_step] = str(row['id']) + "," + stage + "," + pipeline
+                cmd_exe[exe_step] = str(row["id"]) + "," + stage + "," + pipeline
             else:
-                if row['id'] > int(cmd_exe.get(exe_step, None).split(',')[0]):
-                    cmd_exe[exe_step] = str(row['id']) + "," + stage + "," + pipeline
+                if row["id"] > int(cmd_exe.get(exe_step, None).split(",")[0]):
+                    cmd_exe[exe_step] = str(row["id"]) + "," + stage + "," + pipeline
 
 """
 Parse the dvc.lock file.
 """
 pipeline_dict = {}
-with open("dvc.lock", 'r') as f:
+with open("dvc.lock", "r") as f:
     valuesYaml = yaml.load(f, Loader=yaml.FullLoader)
 
-for k in valuesYaml['stages']:
+for k in valuesYaml["stages"]:
     pipeline_dict[k] = {}
-    commands=[]
+    commands = []
     deps = []
     outs = []
     k_dict = {}
     i = 0
 
-    for kk in valuesYaml['stages'][k]:
-        if kk == 'cmd':
-            cmd_list = valuesYaml['stages'][k][kk].split()
+    for kk in valuesYaml["stages"][k]:
+        if kk == "cmd":
+            cmd_list = valuesYaml["stages"][k][kk].split()
             commands.append(cmd_list)
-            k_dict['cmd'] = cmd_list
+            k_dict["cmd"] = cmd_list
             i = i + 1
-        if kk == 'deps':
-            deps = valuesYaml['stages'][k][kk]
-            k_dict['deps'] = deps
-        if kk == 'outs':
-            outs = valuesYaml['stages'][k][kk]
-            k_dict['outs'] = outs
+        if kk == "deps":
+            deps = valuesYaml["stages"][k][kk]
+            k_dict["deps"] = deps
+        if kk == "outs":
+            outs = valuesYaml["stages"][k][kk]
+            k_dict["outs"] = outs
 
     pipeline_dict[k][str(i)] = k_dict
 """
 Create a unique Pipeline name if there is no mlmd file
 """
-pipeline_name = "Pipeline"+"-"+str(uuid.uuid4()) if not pipeline_name else pipeline_name
+pipeline_name = (
+    "Pipeline" + "-" + str(uuid.uuid4()) if not pipeline_name else pipeline_name
+)
 
 
 metawriter = cmf.Cmf(filename="mlmd", pipeline_name=pipeline_name, graph=True)
@@ -132,16 +142,16 @@ Parse the dvc.lock dictionary and get the command section
 for k, v in pipeline_dict.items():
     for kk, vv in v.items():
         for kkk, vvv in vv.items():
-            if kkk == 'cmd':
+            if kkk == "cmd":
                 """
                 Key eg - cmd
                 Value eg - ['python3', 'demo.py', '--enable_df', 'True']
                 cmd_exe eg - {"['demo_eval.py', '--trained_model', 'data/model-3', '--enable_df', 'True', '--round', '3']":
-                '3,eval,active_learning', 
+                '3,eval,active_learning',
                 "['demo_eval.py', '--trained_model', 'data/model-2', '--enable_df', 'True', '--round', '2']": '2,eval,active_learning',
                 "['demo_eval.py', '--trained_model', 'data/model-1', '--enable_df', 'True', '--round', '1']": '1,eval,active_learning'}
                 In the next line pop out the python
-                if the pipeline_dict command is already there in the cmd_exe dict got from parsing the mlmd pop that cmd out 
+                if the pipeline_dict command is already there in the cmd_exe dict got from parsing the mlmd pop that cmd out
                 and use the stored lineage from the mlmd
                 """
                 vvv.pop(0)
@@ -161,7 +171,7 @@ for k, v in pipeline_dict.items():
                     """
                     context_name = k
                     execution_name = vvv[0]
-                    lineage = execution_name+","+context_name+","+ pipeline_name
+                    lineage = execution_name + "," + context_name + "," + pipeline_name
                     ingest_metadata(lineage, vv, False, metawriter)
 
 metawriter.log_dvc_lock("dvc.lock")

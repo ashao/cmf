@@ -18,7 +18,11 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from cmflib.cmf_exception_handling import CmfInitComplete, CmfInitFailed, Neo4jArgumentNotProvided
+from cmflib.cmf_exception_handling import (
+    CmfInitComplete,
+    CmfInitFailed,
+    Neo4jArgumentNotProvided,
+)
 from cmflib.cli.command import CmdBase
 from cmflib.dvc_wrapper import (
     git_quiet_init,
@@ -32,6 +36,7 @@ from cmflib.dvc_wrapper import (
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
 from cmflib.utils.helper_functions import generate_osdf_token
+
 
 class CmdInitOSDFRemote(CmdBase):
     def run(self):
@@ -82,20 +87,22 @@ class CmdInitOSDFRemote(CmdBase):
         if not output:
             raise CmfInitFailed
         print(output)
-        #dvc_add_attribute(repo_type, "key_id", self.args.key_id)
-        #dvc_add_attribute(repo_type, "key_path", self.args.key_path)
-        #dvc_add_attribute(repo_type, "key_issuer", self.args.key_issuer)
-        #Writing to an OSDF Remote is based on SSH Remote. With few additions
-        #In addition to URL (including FQDN, port, path), we need to provide 
-        #method=PUT, ssl_verify=false, ask_password=false, auth=custom, custom_auth-header='Authorization'
-        #password='Bearer + dynamically generated scitoken' (This token has a timeout of 15 mins so must be generated right before any push/pull) 
-        dvc_add_attribute(repo_type,"method", "PUT")
-        dvc_add_attribute(repo_type,"ssl_verify", "false")
-        dvc_add_attribute(repo_type,"ask_password", "false")
-        dvc_add_attribute(repo_type,"auth", "custom")
-        dvc_add_attribute(repo_type,"custom_auth_header", "Authorization")
-        dynamic_password = generate_osdf_token(self.args.key_id,self.args.key_path,self.args.key_issuer)
-        dvc_add_attribute(repo_type,"password",dynamic_password)
+        # dvc_add_attribute(repo_type, "key_id", self.args.key_id)
+        # dvc_add_attribute(repo_type, "key_path", self.args.key_path)
+        # dvc_add_attribute(repo_type, "key_issuer", self.args.key_issuer)
+        # Writing to an OSDF Remote is based on SSH Remote. With few additions
+        # In addition to URL (including FQDN, port, path), we need to provide
+        # method=PUT, ssl_verify=false, ask_password=false, auth=custom, custom_auth-header='Authorization'
+        # password='Bearer + dynamically generated scitoken' (This token has a timeout of 15 mins so must be generated right before any push/pull)
+        dvc_add_attribute(repo_type, "method", "PUT")
+        dvc_add_attribute(repo_type, "ssl_verify", "false")
+        dvc_add_attribute(repo_type, "ask_password", "false")
+        dvc_add_attribute(repo_type, "auth", "custom")
+        dvc_add_attribute(repo_type, "custom_auth_header", "Authorization")
+        dynamic_password = generate_osdf_token(
+            self.args.key_id, self.args.key_path, self.args.key_issuer
+        )
+        dvc_add_attribute(repo_type, "password", dynamic_password)
 
         attr_dict = {}
         attr_dict["path"] = self.args.path
@@ -132,7 +139,7 @@ def add_parser(subparsers, parent_parser):
         "--cache",
         help="Specify FQDN for OSDF cache path including port and path. For Ex. https://osdf-director.osg-htc.org/nrp/fdp/",
         metavar="<cache>",
-        #default="https://osdf-director.osg-htc.org/nrp/fdp/",
+        # default="https://osdf-director.osg-htc.org/nrp/fdp/",
         default="",
     )
 

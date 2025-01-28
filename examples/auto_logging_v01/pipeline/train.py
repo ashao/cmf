@@ -35,7 +35,9 @@ from cmflib.contrib.auto_logging_v01 import (
 
 
 @step()
-def train(ctx: Context, params: Parameters, train_dataset: Dataset) -> t.Dict[str, t.Union[MLModel, ExecutionMetrics]]:
+def train(
+    ctx: Context, params: Parameters, train_dataset: Dataset
+) -> t.Dict[str, t.Union[MLModel, ExecutionMetrics]]:
     """Train a decision tree classifier.
 
     This example demonstrates automated logging of output models and execution metrics. In your python code:
@@ -67,7 +69,9 @@ def train(ctx: Context, params: Parameters, train_dataset: Dataset) -> t.Dict[st
 
     clf = DecisionTreeClassifier()
     clf = clf.fit(dataset["x"], dataset["y"])
-    train_accuracy = accuracy_score(y_true=dataset["y"], y_pred=clf.predict(dataset["x"]))
+    train_accuracy = accuracy_score(
+        y_true=dataset["y"], y_pred=clf.predict(dataset["x"])
+    )
 
     workspace: Path = prepare_workspace(ctx)
     with open(workspace / "model.pkl", "wb") as stream:
@@ -78,7 +82,9 @@ def train(ctx: Context, params: Parameters, train_dataset: Dataset) -> t.Dict[st
     return {
         "model": MLModel(workspace / "model.pkl"),
         "exec_metrics": ExecutionMetrics(
-            uri=str(cmf.execution.id) + "/metrics/train", name="train", params={"accuracy": train_accuracy}
+            uri=str(cmf.execution.id) + "/metrics/train",
+            name="train",
+            params={"accuracy": train_accuracy},
         ),
     }
 

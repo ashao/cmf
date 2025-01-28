@@ -23,10 +23,10 @@ import collections
 import numpy as np
 import pandas as pd
 import scipy.sparse as sparse
-from sklearn.feature_extraction.text import (CountVectorizer, TfidfTransformer)
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from cmflib import cmf
 
-__all__ = ['featurize']
+__all__ = ["featurize"]
 
 
 def _get_df(data: str) -> pd.DataFrame:
@@ -55,7 +55,7 @@ def _save_matrix(df: pd.DataFrame, matrix, output: str) -> None:
 
 
 def featurize(input_dir: str, output_dir: str) -> None:
-    """ Create train and test Machine Learning datasets.
+    """Create train and test Machine Learning datasets.
     Args:
         input_dir: Path to a directory containing train.tsv and test.tsv files.
         output_dir: Path to a directory that will contain train.pkl and test.pkl files.
@@ -67,17 +67,25 @@ def featurize(input_dir: str, output_dir: str) -> None:
     params = yaml.safe_load(open("params.yaml"))["featurize"]
     np.set_printoptions(suppress=True)
 
-    Dataset = collections.namedtuple('Dataset', ['train', 'test'])
-    input_ds = Dataset(train=os.path.join(input_dir, "train.tsv"), test=os.path.join(input_dir, "test.tsv"))
+    Dataset = collections.namedtuple("Dataset", ["train", "test"])
+    input_ds = Dataset(
+        train=os.path.join(input_dir, "train.tsv"),
+        test=os.path.join(input_dir, "test.tsv"),
+    )
 
     os.makedirs(output_dir, exist_ok=True)
-    output_ds = Dataset(train=os.path.join(output_dir, "train.pkl"), test=os.path.join(output_dir, "test.pkl"))
+    output_ds = Dataset(
+        train=os.path.join(output_dir, "train.pkl"),
+        test=os.path.join(output_dir, "test.pkl"),
+    )
     graph_env = os.getenv("NEO4J", "False")
     graph = True if graph_env == "True" or graph_env == "TRUE" else False
     metawriter = cmf.Cmf(filepath="mlmd", pipeline_name="Test-env", graph=graph)
 
     _ = metawriter.create_context(pipeline_stage="Featurize")
-    _ = metawriter.create_execution(execution_type="Featurize-execution", custom_properties=params)
+    _ = metawriter.create_execution(
+        execution_type="Featurize-execution", custom_properties=params
+    )
 
     _ = metawriter.log_dataset(input_ds.train, "input")
     _ = metawriter.log_dataset(input_ds.test, "input")
@@ -87,7 +95,9 @@ def featurize(input_dir: str, output_dir: str) -> None:
     train_words = np.array(df_train.text.str.lower().values.astype("U"))
 
     bag_of_words = CountVectorizer(
-        stop_words="english", max_features=params["max_features"], ngram_range=(1, params["ngrams"])
+        stop_words="english",
+        max_features=params["max_features"],
+        ngram_range=(1, params["ngrams"]),
     )
 
     bag_of_words.fit(train_words)
@@ -111,11 +121,11 @@ def featurize(input_dir: str, output_dir: str) -> None:
 
 
 @click.command()
-@click.argument('input_dir', required=True, type=str)
-@click.argument('output_dir', required=True, type=str)
+@click.argument("input_dir", required=True, type=str)
+@click.argument("output_dir", required=True, type=str)
 def featurize_cli(input_dir: str, output_dir: str) -> None:
     featurize(input_dir, output_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     featurize_cli()

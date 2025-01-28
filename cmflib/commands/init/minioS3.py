@@ -30,7 +30,12 @@ from cmflib.dvc_wrapper import (
 )
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
-from cmflib.cmf_exception_handling import Neo4jArgumentNotProvided, CmfInitComplete, CmfInitFailed
+from cmflib.cmf_exception_handling import (
+    Neo4jArgumentNotProvided,
+    CmfInitComplete,
+    CmfInitFailed,
+)
+
 
 class CmdInitMinioS3(CmdBase):
     def run(self):
@@ -86,7 +91,6 @@ class CmdInitMinioS3(CmdBase):
         dvc_add_attribute(repo_type, "secret_access_key", self.args.secret_key)
         status = CmfInitComplete()
         return status
-
 
 
 def add_parser(subparsers, parent_parser):

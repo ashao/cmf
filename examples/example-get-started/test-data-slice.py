@@ -32,12 +32,17 @@ def generate_dataset():
     os.mkdir(path)
     msg = []
     for _ in range(4):
-        msg.append(''.join([random.choice(
-            string.ascii_letters + string.digits)
-            for _ in range(100)]))
+        msg.append(
+            "".join(
+                [
+                    random.choice(string.ascii_letters + string.digits)
+                    for _ in range(100)
+                ]
+            )
+        )
 
     for _i in range(1, 101):
-        with open(path + "/" + str(_i) + ".txt", 'w') as f:
+        with open(path + "/" + str(_i) + ".txt", "w") as f:
             index = random.randint(0, 3)
             f.write(msg[index])
 
@@ -63,7 +68,7 @@ for i in range(1, 3, 1):
         print(folder_path + "/" + str(j) + ".txt")
         dataslice.add_data(
             path=folder_path + "/" + str(j) + ".txt",
-            custom_properties={"key1": "value1", "key2": "value2"}
+            custom_properties={"key1": "value1", "key2": "value2"},
         )
     dataslice.commit()
 
@@ -80,7 +85,9 @@ print(record)
 print(row_content)
 
 # Update the metadata for a record in the slice.
-metawriter.update_dataslice(name="slice-1", record=record, custom_properties={"key1": "1", "key2": "2"})
+metawriter.update_dataslice(
+    name="slice-1", record=record, custom_properties={"key1": "1", "key2": "2"}
+)
 df = metawriter.read_dataslice(name="slice-1")
 
 print("After update")

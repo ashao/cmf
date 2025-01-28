@@ -17,21 +17,22 @@
 import os
 from dvc.api import DVCFileSystem
 
-class LocalArtifacts():
-    """
-        Initialize the LocalArtifacts class with local repo url.
-        This class downloads one local artifact at a time and if the passed artifact is a directory 
-        then, it downloads all the files from the directory 
 
-        Args:
-            dvc_config_op (dict): Dictionary containing local url (remote.local.url).
-        """
-    
+class LocalArtifacts:
+    """
+    Initialize the LocalArtifacts class with local repo url.
+    This class downloads one local artifact at a time and if the passed artifact is a directory
+    then, it downloads all the files from the directory
+
+    Args:
+        dvc_config_op (dict): Dictionary containing local url (remote.local.url).
+    """
+
     def __init__(self, dvc_config_op):
         self.fs = DVCFileSystem(
-                dvc_config_op["remote.local-storage.url"]
-            )  # dvc_config_op[1] is file system path - "/path/to/local/repository"
-        
+            dvc_config_op["remote.local-storage.url"]
+        )  # dvc_config_op[1] is file system path - "/path/to/local/repository"
+
     def download_file(
         self,
         current_directory: str,
@@ -58,20 +59,21 @@ class LocalArtifacts():
         if "/" in download_loc:
             dir_path, _ = download_loc.rsplit("/", 1)
         if dir_path != "":
-            os.makedirs(dir_path, mode=0o777, exist_ok=True)  # creating subfolders if needed
-        
+            os.makedirs(
+                dir_path, mode=0o777, exist_ok=True
+            )  # creating subfolders if needed
+
         try:
             # get_file() returns none when file gets downloaded.
             response = self.fs.get_file(object_name, download_loc)
 
             # Check if the response indicates success.
-            if response == None:  
+            if response == None:
                 return object_name, download_loc, True
             else:
-                return  object_name, download_loc, False
+                return object_name, download_loc, False
         except Exception as e:
-            return  object_name, download_loc, False
-
+            return object_name, download_loc, False
 
     def download_directory(
         self,
@@ -98,7 +100,9 @@ class LocalArtifacts():
         if "/" in download_loc:
             dir_path, _ = download_loc.rsplit("/", 1)
         if dir_path != "":
-            os.makedirs(dir_path, mode=0o777, exist_ok=True)  # creating subfolders if needed
+            os.makedirs(
+                dir_path, mode=0o777, exist_ok=True
+            )  # creating subfolders if needed
 
         """"
         if object_name ends with .dir - it is a directory.
@@ -115,8 +119,8 @@ class LocalArtifacts():
         try:
             # Download the .dir file containing metadata about tracked files.
             response = self.fs.get_file(object_name, temp_dir)
-            
-            with open(temp_dir, 'r') as file:
+
+            with open(temp_dir, "r") as file:
                 tracked_files = eval(file.read())
 
             # removing temp_dir
@@ -134,18 +138,20 @@ class LocalArtifacts():
             obj = True
             for file_info in tracked_files:
                 total_files_in_directory += 1
-                relpath = file_info['relpath']
-                md5_val = file_info['md5']
+                relpath = file_info["relpath"]
+                md5_val = file_info["md5"]
                 # md5_val = a237457aa730c396e5acdbc5a64c8453
                 # we need a2/37457aa730c396e5acdbc5a64c8453
-                formatted_md5 = md5_val[:2] + '/' + md5_val[2:]
+                formatted_md5 = md5_val[:2] + "/" + md5_val[2:]
                 temp_object_name = f"{repo_path}/{formatted_md5}"
                 temp_download_loc = f"{download_loc}/{relpath}"
                 try:
                     obj = self.fs.get_file(temp_object_name, temp_download_loc)
-                    if obj == None: 
+                    if obj == None:
                         files_downloaded += 1
-                        print(f"object {temp_object_name} downloaded at {temp_download_loc}.")
+                        print(
+                            f"object {temp_object_name} downloaded at {temp_download_loc}."
+                        )
                     else:
                         print(f"object {temp_object_name} is not downloaded.")
                 # this exception is for get_file() function for temp_object_name
@@ -153,17 +159,17 @@ class LocalArtifacts():
                     print(f"object {temp_object_name} is not downloaded.")
 
             # total_files - files_downloaded gives us the number of files which are failed to download
-            if (total_files_in_directory - files_downloaded) == 0:   
+            if (total_files_in_directory - files_downloaded) == 0:
                 return total_files_in_directory, files_downloaded, True
-            else:         
-                return total_files_in_directory, files_downloaded, False  
+            else:
+                return total_files_in_directory, files_downloaded, False
         # this exception is for get_file() function for object_name
         except Exception as e:
             print(f"object {object_name} is not downloaded.")
             # We usually don't count .dir as a file while counting total_files_in_directory.
-            # However, here we failed to download the .dir folder itself. 
+            # However, here we failed to download the .dir folder itself.
             # So we need to make, total_files_in_directory = 1
-            total_files_in_directory = 1 
+            total_files_in_directory = 1
             return total_files_in_directory, files_downloaded, False
 
         # sometimes we get TypeError as an execption, however investiagtion for the exact scenarios is pending

@@ -2,6 +2,7 @@ import numpy as np
 from .strategy import Strategy
 from sklearn.cluster import KMeans
 
+
 class KMeansSampling(Strategy):
     def __init__(self, dataset, net):
         super(KMeansSampling, self).__init__(dataset, net)
@@ -23,7 +24,7 @@ class KMeansSampling(Strategy):
         centers = cluster_learner.cluster_centers_[cluster_idxs]
         print("length of centers")
         print((centers.shape))
-        dis = (embeddings - centers)**2
+        dis = (embeddings - centers) ** 2
         print("printnig shape")
         print(len(dis))
         print(dis)
@@ -33,17 +34,24 @@ class KMeansSampling(Strategy):
         print("embedding shape 0")
         print(embeddings.shape[0])
         print("distance from cluster shape")
-        print((dis[cluster_idxs==1]).shape)
-        print(dis[cluster_idxs==1])
+        print((dis[cluster_idxs == 1]).shape)
+        print(dis[cluster_idxs == 1])
         print("distance from cluster argmin")
         for i in range(n):
             print("======")
-            print([cluster_idxs==i])
-            print([dis[cluster_idxs==i].argmin()])
-            print([dis[cluster_idxs==i].min()])
-        print([cluster_idxs==i][dis[cluster_idxs==i].argmin()] for i in range(n))
+            print([cluster_idxs == i])
+            print([dis[cluster_idxs == i].argmin()])
+            print([dis[cluster_idxs == i].min()])
+        print([cluster_idxs == i][dis[cluster_idxs == i].argmin()] for i in range(n))
 
-        q_idxs = np.array([np.arange(embeddings.shape[0])[cluster_idxs==i][dis[cluster_idxs==i].argmin()] for i in range(n)])
+        q_idxs = np.array(
+            [
+                np.arange(embeddings.shape[0])[cluster_idxs == i][
+                    dis[cluster_idxs == i].argmin()
+                ]
+                for i in range(n)
+            ]
+        )
         print("index")
         print(q_idxs)
         return unlabeled_idxs[q_idxs]

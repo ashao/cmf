@@ -24,15 +24,17 @@ from cmflib.server_interface import server_interface
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.cmf_exception_handling import (
     PipelineNotFound,
-    CmfNotConfigured, ExecutionIDNotFound,
+    CmfNotConfigured,
+    ExecutionIDNotFound,
     MlmdNotFoundOnServer,
     MlmdFilePullSuccess,
-    CmfServerNotAvailable, 
+    CmfServerNotAvailable,
     InternalServerError,
     MlmdFilePullFailure,
     DirectoryNotfound,
-    FileNameNotfound
+    FileNameNotfound,
 )
+
 
 # This class pulls mlmd file from cmf-server
 class CmdMetadataPull(CmdBase):
@@ -57,9 +59,9 @@ class CmdMetadataPull(CmdBase):
                 if temp != "":
                     current_directory = temp
                 if os.path.exists(current_directory):
-                    full_path_to_dump  = self.args.file_name
+                    full_path_to_dump = self.args.file_name
                 else:
-                    raise DirectoryNotfound(current_dir= current_directory)
+                    raise DirectoryNotfound(current_dir=current_directory)
             else:
                 raise FileNameNotfound
         else:
@@ -75,7 +77,7 @@ class CmdMetadataPull(CmdBase):
             raise PipelineNotFound(self.args.pipeline_name)
         elif output.content.decode() == "no_exec_id":
             raise ExecutionIDNotFound(exec_id)
-      
+
         elif output.content:
             if status == 200:
                 try:
@@ -96,7 +98,8 @@ class CmdMetadataPull(CmdBase):
                 raise InternalServerError
             else:
                 raise MlmdFilePullFailure
-            
+
+
 def add_parser(subparsers, parent_parser):
     PULL_HELP = "Pulls mlmd from cmf-server to users's machine."
 

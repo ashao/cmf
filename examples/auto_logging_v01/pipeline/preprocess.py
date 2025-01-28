@@ -20,11 +20,20 @@ from pathlib import Path
 
 from sklearn.model_selection import train_test_split
 
-from cmflib.contrib.auto_logging_v01 import Context, Dataset, Parameters, cli_run, prepare_workspace, step
+from cmflib.contrib.auto_logging_v01 import (
+    Context,
+    Dataset,
+    Parameters,
+    cli_run,
+    prepare_workspace,
+    step,
+)
 
 
 @step()
-def preprocess(ctx: Context, params: Parameters, dataset: Dataset) -> t.Dict[str, Dataset]:
+def preprocess(
+    ctx: Context, params: Parameters, dataset: Dataset
+) -> t.Dict[str, Dataset]:
     """Preprocess the IRIS dataset by splitting it into train and test datasets.
 
     This example demonstrates automated logging of input and output datasets. In your python code:
@@ -69,7 +78,10 @@ def preprocess(ctx: Context, params: Parameters, dataset: Dataset) -> t.Dict[str
     with open(workspace / "test.pkl", "wb") as stream:
         pickle.dump({"x": x_test, "y": y_test}, stream)
 
-    return {"train_dataset": Dataset(workspace / "train.pkl"), "test_dataset": Dataset(workspace / "test.pkl")}
+    return {
+        "train_dataset": Dataset(workspace / "train.pkl"),
+        "test_dataset": Dataset(workspace / "test.pkl"),
+    }
 
 
 if __name__ == "__main__":

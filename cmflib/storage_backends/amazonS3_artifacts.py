@@ -17,6 +17,7 @@
 import os
 import boto3
 
+
 class AmazonS3Artifacts:
 
     def __init__(self, dvc_config_op):
@@ -32,12 +33,12 @@ class AmazonS3Artifacts:
 
         # Create an S3 client with the provided credentials.
         self.s3 = boto3.client(
-                's3',
-                aws_access_key_id = self.access_key,
-                aws_secret_access_key = self.secret_key,
-                aws_session_token = self.session_token
-            )
-        
+            "s3",
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key,
+            aws_session_token=self.session_token,
+        )
+
     def download_file(
         self,
         current_directory: str,
@@ -62,17 +63,19 @@ class AmazonS3Artifacts:
 
             # Check if the bucket exists.
             self.s3.head_bucket(Bucket=bucket_name)
-            
+
             # Create necessary directories for the download location.
             dir_path = ""
             if "/" in download_loc:
                 dir_path, _ = download_loc.rsplit("/", 1)
             if dir_path != "":
-                os.makedirs(dir_path, mode=0o777, exist_ok=True)  # creating subfolders if needed
-            
+                os.makedirs(
+                    dir_path, mode=0o777, exist_ok=True
+                )  # creating subfolders if needed
+
             # Download the file
             response = self.s3.download_file(bucket_name, object_name, download_loc)
-            
+
             # Check if the response indicates success.
             if response == None:
                 return object_name, download_loc, True
@@ -80,16 +83,17 @@ class AmazonS3Artifacts:
                 return object_name, download_loc, False
         except self.s3.exceptions.ClientError as e:
             # If a specific error code is returned, the bucket does not exist
-            if e.response['Error']['Code'] == '404':
+            if e.response["Error"]["Code"] == "404":
                 print(f"{bucket_name}  doesn't exists!!")
-                return object_name, download_loc, False   
+                return object_name, download_loc, False
             else:
                 print(e)
                 return object_name, download_loc, False
         except Exception as e:
             return object_name, download_loc, False
 
-    def download_directory(self,
+    def download_directory(
+        self,
         current_directory: str,
         bucket_name: str,
         object_name: str,
@@ -107,7 +111,7 @@ class AmazonS3Artifacts:
         Returns:
             tuple: (total_files_in_directory, files_downloaded, status) where status indicates success (True) or failure (False).
         """
-        
+
         self.s3.head_bucket(Bucket=bucket_name)
         """"
         if object_name ends with .dir - it is a directory.
@@ -119,7 +123,9 @@ class AmazonS3Artifacts:
         if "/" in download_loc:
             dir_path, _ = download_loc.rsplit("/", 1)
         if dir_path != "":
-            os.makedirs(dir_path, mode=0o777, exist_ok=True)  # creating subfolders if needed
+            os.makedirs(
+                dir_path, mode=0o777, exist_ok=True
+            )  # creating subfolders if needed
         os.makedirs(download_loc, mode=0o777, exist_ok=True)
         total_files_in_directory = 0
         files_downloaded = 0
@@ -131,7 +137,7 @@ class AmazonS3Artifacts:
             response = self.s3.download_file(bucket_name, object_name, temp_dir)
 
             # Read the .dir metadata to get file information.
-            with open(temp_dir, 'r') as file:
+            with open(temp_dir, "r") as file:
                 tracked_files = eval(file.read())
 
             # removing temp_dir
@@ -144,49 +150,50 @@ class AmazonS3Artifacts:
             which will leave us with the artifact repo path
             """
             repo_path = "/".join(object_name.split("/")[:-2])
-            obj=True
+            obj = True
             for file_info in tracked_files:
                 total_files_in_directory += 1
-                relpath = file_info['relpath']
-                md5_val = file_info['md5']
+                relpath = file_info["relpath"]
+                md5_val = file_info["md5"]
                 # download_loc =  /home/user/datatslice/example-get-started/test/artifacts/raw_data
                 # md5_val = a237457aa730c396e5acdbc5a64c8453
                 # we need a2/37457aa730c396e5acdbc5a64c8453
-                formatted_md5 = md5_val[:2] + '/' + md5_val[2:]
+                formatted_md5 = md5_val[:2] + "/" + md5_val[2:]
                 temp_download_loc = f"{download_loc}/{relpath}"
                 temp_object_name = f"{repo_path}/{formatted_md5}"
-                
-                obj = self.s3.download_file(bucket_name, temp_object_name, temp_download_loc)
+
+                obj = self.s3.download_file(
+                    bucket_name, temp_object_name, temp_download_loc
+                )
                 if obj == None:
                     files_downloaded += 1
-                    print(f"object {temp_object_name} downloaded at {temp_download_loc}.")
+                    print(
+                        f"object {temp_object_name} downloaded at {temp_download_loc}."
+                    )
                 else:
                     print(f"object {temp_object_name} is not downloaded.")
 
             # Check if all files were successfully downloaded.
-            if (total_files_in_directory - files_downloaded) == 0:   
+            if (total_files_in_directory - files_downloaded) == 0:
                 return total_files_in_directory, files_downloaded, True
-            else:         
-                return total_files_in_directory, files_downloaded, False   
+            else:
+                return total_files_in_directory, files_downloaded, False
         except self.s3.exceptions.ClientError as e:
             # If a specific error code is returned, the bucket does not exist
-            if e.response['Error']['Code'] == '404':
+            if e.response["Error"]["Code"] == "404":
                 print(f"{bucket_name}  doesn't exists!!")
-                total_files_in_directory = 1 
-                return total_files_in_directory, files_downloaded, False    
+                total_files_in_directory = 1
+                return total_files_in_directory, files_downloaded, False
             else:
                 print(e)
-                total_files_in_directory = 1 
+                total_files_in_directory = 1
                 return total_files_in_directory, files_downloaded, False
         except Exception as e:
             print(f"object {object_name} is not downloaded.")
             # Handle failure to download the .dir metadata.
-            # need to improve this  
+            # need to improve this
             # We usually don't count .dir as a file while counting total_files_in_directory.
-            # However, here we failed to download the .dir folder itself. So we need to make 
+            # However, here we failed to download the .dir folder itself. So we need to make
             # total_files_in_directory = 1, because  ..............
-            total_files_in_directory = 1 
+            total_files_in_directory = 1
             return total_files_in_directory, files_downloaded, False
-
-        
-            

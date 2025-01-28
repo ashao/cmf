@@ -1,4 +1,5 @@
 """This module contains all the public API for CMF"""
+
 ###
 # Copyright (2022) Hewlett Packard Enterprise Development LP
 #
@@ -73,6 +74,7 @@ from cmflib.cmf_commands_wrapper import (
     _execution_list,
 )
 
+
 class Cmf:
     """This class provides methods to log metadata for distributed AI pipelines.
     The class instance creates an ML metadata store to store the metadata.
@@ -122,10 +124,12 @@ class Cmf:
         graph: bool = False,
         is_server: bool = False,
     ):
-        #path to directory
-        self.cmf_init_path = filepath.rsplit("/",1)[0] \
-				 if len(filepath.rsplit("/",1)) > 1 \
-					else  os.getcwd()
+        # path to directory
+        self.cmf_init_path = (
+            filepath.rsplit("/", 1)[0]
+            if len(filepath.rsplit("/", 1)) > 1
+            else os.getcwd()
+        )
 
         logging_dir = change_dir(self.cmf_init_path)
         if is_server is False:
@@ -133,7 +137,7 @@ class Cmf:
         if custom_properties is None:
             custom_properties = {}
         if not pipeline_name:
-            # assign folder name as pipeline name 
+            # assign folder name as pipeline name
             cur_folder = os.path.basename(os.getcwd())
             pipeline_name = cur_folder
         config = mlpb.ConnectionConfig()
@@ -148,7 +152,7 @@ class Cmf:
         self.input_artifacts = []
         self.execution_label_props = {}
         self.graph = graph
-        #last token in filepath
+        # last token in filepath
         self.branch_name = filepath.rsplit("/", 1)[-1]
 
         if is_server is False:
@@ -172,20 +176,18 @@ class Cmf:
 
     @staticmethod
     def __load_neo4j_params():
-         cmf_config = os.environ.get("CONFIG_FILE", ".cmfconfig")
-         if os.path.exists(cmf_config):
-             attr_dict = CmfConfig.read_config(cmf_config)
-             Cmf.__neo4j_uri = attr_dict.get("neo4j-uri", "")
-             Cmf.__neo4j_password = attr_dict.get("neo4j-password", "")
-             Cmf.__neo4j_user = attr_dict.get("neo4j-user", "")
-
+        cmf_config = os.environ.get("CONFIG_FILE", ".cmfconfig")
+        if os.path.exists(cmf_config):
+            attr_dict = CmfConfig.read_config(cmf_config)
+            Cmf.__neo4j_uri = attr_dict.get("neo4j-uri", "")
+            Cmf.__neo4j_password = attr_dict.get("neo4j-password", "")
+            Cmf.__neo4j_user = attr_dict.get("neo4j-user", "")
 
     @staticmethod
     def __get_neo4j_server_config():
-        Cmf.__neo4j_uri = os.getenv('NEO4J_URI', "")
-        Cmf.__neo4j_user = os.getenv('NEO4J_USER_NAME', "")
-        Cmf.__neo4j_password = os.getenv('NEO4J_PASSWD', "")
-
+        Cmf.__neo4j_uri = os.getenv("NEO4J_URI", "")
+        Cmf.__neo4j_user = os.getenv("NEO4J_USER_NAME", "")
+        Cmf.__neo4j_password = os.getenv("NEO4J_PASSWD", "")
 
     @staticmethod
     def __prechecks():
@@ -203,10 +205,7 @@ class Cmf:
     def __check_git_remote():
         """Executes precheck for git remote"""
         if not check_git_remote():
-            print(
-                "*** Error git remote not set ***\n"
-                "*** Run cmf init ***"
-            )
+            print("*** Error git remote not set ***\n" "*** Run cmf init ***")
             sys.exit(1)
 
     @staticmethod
@@ -214,8 +213,7 @@ class Cmf:
         """Executes precheck for default dvc remote"""
         if not check_default_remote():
             print(
-                "*** DVC not configured correctly ***\n"
-                "*** Run command cmf init ***" 
+                "*** DVC not configured correctly ***\n" "*** Run command cmf init ***"
             )
             sys.exit(1)
 
@@ -264,8 +262,7 @@ class Cmf:
         """
         custom_props = {} if custom_properties is None else custom_properties
         pipeline_stage = self.parent_context.name + "/" + pipeline_stage
-        ctx = get_or_create_run_context(
-            self.store, pipeline_stage, custom_props)
+        ctx = get_or_create_run_context(self.store, pipeline_stage, custom_props)
         self.child_context = ctx
         associate_child_to_parent_context(
             store=self.store, parent_context=self.parent_context, child_context=ctx
@@ -305,8 +302,7 @@ class Cmf:
         """
 
         custom_props = {} if custom_properties is None else custom_properties
-        ctx = get_or_create_run_context(
-            self.store, pipeline_stage, custom_props)
+        ctx = get_or_create_run_context(self.store, pipeline_stage, custom_props)
         self.child_context = ctx
         associate_child_to_parent_context(
             store=self.store, parent_context=self.parent_context, child_context=ctx
@@ -323,16 +319,16 @@ class Cmf:
         context_name: str,
         context_id: int,
         properties: t.Optional[t.Dict] = None,
-        custom_properties: t.Optional[t.Dict] = None
+        custom_properties: t.Optional[t.Dict] = None,
     ) -> mlpb.Context:
         self.context = get_or_create_context_with_type(
-                           self.store, 
-                           context_name, 
-                           type_name, 
-                           properties, 
-                           type_properties = None,
-                           custom_properties = custom_properties
-                       )
+            self.store,
+            context_name,
+            type_name,
+            properties,
+            type_properties=None,
+            custom_properties=custom_properties,
+        )
         if self.context is None:
             print("Error - no context id")
             return
@@ -342,15 +338,14 @@ class Cmf:
                 if isinstance(value, int):
                     self.context.custom_properties[key].int_value = value
                 else:
-                    self.context.custom_properties[key].string_value = str(
-                        value)
+                    self.context.custom_properties[key].string_value = str(value)
         updated_context = update_context_custom_properties(
             self.store,
             context_id,
             context_name,
             self.context.properties,
             self.context.custom_properties,
-        )        
+        )
         return updated_context
 
     def create_execution(
@@ -408,7 +403,9 @@ class Cmf:
         # create context if not already created
         if not self.child_context:
             self.create_context(pipeline_stage=name_without_extension)
-            assert self.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+            assert (
+                self.child_context is not None
+            ), f"Failed to create context for {self.pipeline_name}!!"
 
         # Initializing the execution related fields
 
@@ -419,14 +416,14 @@ class Cmf:
         git_repo = git_get_repo()
         git_start_commit = git_get_commit()
         cmd = str(sys.argv) if cmd is None else cmd
-        python_env=get_python_env()
+        python_env = get_python_env()
         self.execution = create_new_execution_in_existing_run_context(
             store=self.store,
             # Type field when re-using executions
             execution_type_name=self.child_context.name,
-            execution_name=execution_type, 
-            #Name field if we are re-using executions
-            #Type field , if creating new executions always 
+            execution_name=execution_type,
+            # Name field if we are re-using executions
+            # Type field , if creating new executions always
             context_id=self.child_context.id,
             execution=cmd,
             pipeline_id=self.parent_context.id,
@@ -439,9 +436,11 @@ class Cmf:
         )
         uuids = self.execution.properties["Execution_uuid"].string_value
         if uuids:
-            self.execution.properties["Execution_uuid"].string_value = uuids+","+str(uuid.uuid1())
+            self.execution.properties["Execution_uuid"].string_value = (
+                uuids + "," + str(uuid.uuid1())
+            )
         else:
-            self.execution.properties["Execution_uuid"].string_value = str(uuid.uuid1())            
+            self.execution.properties["Execution_uuid"].string_value = str(uuid.uuid1())
         self.store.put_executions([self.execution])
         self.execution_name = str(self.execution.id) + "," + execution_type
         self.execution_command = cmd
@@ -451,17 +450,17 @@ class Cmf:
         self.execution_label_props["Execution_Name"] = (
             execution_type + ":" + str(self.execution.id)
         )
-        
+
         self.execution_label_props["execution_command"] = cmd
         if self.graph:
             self.driver.create_execution_node(
-            self.execution_name,
-            self.child_context.id,
-            self.parent_context,
-            cmd,
-            self.execution.id,
-            custom_props,
-        )
+                self.execution_name,
+                self.child_context.id,
+                self.parent_context,
+                cmd,
+                self.execution.id,
+                custom_props,
+            )
         os.chdir(logging_dir)
         return self.execution
 
@@ -504,8 +503,7 @@ class Cmf:
                 if isinstance(value, int):
                     self.execution.custom_properties[key].int_value = value
                 else:
-                    self.execution.custom_properties[key].string_value = str(
-                        value)
+                    self.execution.custom_properties[key].string_value = str(value)
         self.store.put_executions([self.execution])
         c_props = {}
         for k, v in self.execution.custom_properties.items():
@@ -519,8 +517,7 @@ class Cmf:
             # taking only value
             self.execution_label_props[key] = val
             c_props[key] = val
-        self.execution_name = str(self.execution.id) + \
-            "," + execution_type.name
+        self.execution_name = str(self.execution.id) + "," + execution_type.name
         self.execution_command = self.execution.properties["Execution"]
         self.execution_label_props["Execution_Name"] = (
             execution_type.name + ":" + str(self.execution.id)
@@ -545,8 +542,8 @@ class Cmf:
         execution_cmd: str,
         properties: t.Optional[t.Dict] = None,
         custom_properties: t.Optional[t.Dict] = None,
-        orig_execution_name:str = "",
-        create_new_execution:bool = True
+        orig_execution_name: str = "",
+        create_new_execution: bool = True,
     ) -> mlpb.Execution:
         """Merge Created execution.
         Every call creates a unique execution. Execution can only be created within a context, so
@@ -603,20 +600,20 @@ class Cmf:
         git_repo = properties.get("Git_Repo", "")
         git_start_commit = properties.get("Git_Start_Commit", "")
         python_env = properties.get("Python_Env", "")
-        #name = properties.get("Name", "")
+        # name = properties.get("Name", "")
         create_new_execution = True
         execution_name = execution_type
-        #exe.name property is passed as the orig_execution_name.
-        #if name is not an empty string then we are re-using executions
+        # exe.name property is passed as the orig_execution_name.
+        # if name is not an empty string then we are re-using executions
         if orig_execution_name != "":
             create_new_execution = False
             execution_name = orig_execution_name
 
         self.execution = create_new_execution_in_existing_run_context(
             store=self.store,
-            execution_type_name=execution_type, # Type field when re-using executions
-            execution_name=execution_name, #Name field if we are re-using executionsname
-                                           #Type field , if creating new executions always
+            execution_type_name=execution_type,  # Type field when re-using executions
+            execution_name=execution_name,  # Name field if we are re-using executionsname
+            # Type field , if creating new executions always
             context_id=self.child_context.id,
             execution=execution_cmd,
             pipeline_id=self.parent_context.id,
@@ -625,20 +622,21 @@ class Cmf:
             git_start_commit=git_start_commit,
             python_env=python_env,
             custom_properties=custom_props,
-            create_new_execution=create_new_execution
+            create_new_execution=create_new_execution,
         )
 
         uuids = ""
 
         uuids = self.execution.properties["Execution_uuid"].string_value
         if uuids:
-            self.execution.properties["Execution_uuid"].string_value = uuids +\
-                ","+properties["Execution_uuid"]
+            self.execution.properties["Execution_uuid"].string_value = (
+                uuids + "," + properties["Execution_uuid"]
+            )
         else:
-            self.execution.properties["Execution_uuid"].string_value =\
-                properties["Execution_uuid"]
+            self.execution.properties["Execution_uuid"].string_value = properties[
+                "Execution_uuid"
+            ]
 
-        
         self.store.put_executions([self.execution])
         self.execution_name = str(self.execution.id) + "," + execution_type
         self.execution_command = execution_cmd
@@ -698,16 +696,20 @@ class Cmf:
         # create context if not already created
         if not self.child_context:
             self.create_context(pipeline_stage=name_without_extension)
-            assert self.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+            assert (
+                self.child_context is not None
+            ), f"Failed to create context for {self.pipeline_name}!!"
 
         # create execution if not already created
         if not self.execution:
             self.create_execution(execution_type=name_without_extension)
-            assert self.execution is not None, f"Failed to create execution for {self.pipeline_name}!!"
+            assert (
+                self.execution is not None
+            ), f"Failed to create execution for {self.pipeline_name}!!"
 
-                ### To Do : Technical Debt. 
+            ### To Do : Technical Debt.
         # If the dataset already exist , then we just link the existing dataset to the execution
-        # We do not update the dataset properties . 
+        # We do not update the dataset properties .
         # We need to append the new properties to the existing dataset properties
         custom_props = {} if custom_properties is None else custom_properties
         git_repo = git_get_repo()
@@ -737,8 +739,7 @@ class Cmf:
 
             # Quick fix- Updating only the name
             if custom_properties is not None:
-                self.update_existing_artifact(
-                    existing_artifact, custom_properties)
+                self.update_existing_artifact(existing_artifact, custom_properties)
             uri = c_hash
             # update url for existing artifact
             self.update_dataset_url(existing_artifact, dvc_url_with_pipeline)
@@ -825,19 +826,19 @@ class Cmf:
 
     def update_dataset_url(self, artifact: mlpb.Artifact, updated_url: str):
         """Update dataset url
-           Updates url of given artifact.
-           Example
-               ```python
-               artifact: mlmd.proto.Artifact = cmf.update_dataset_url(
-                artifact="data.xml.gz"
-                updated_url="/repo/data.xml",
-               )
-               ```
-               Args:
-                  artifact: Artifact for which url is to be updated
-                  updated_url: The updated url path of the dataset.
-               Returns:
-                  Updates artifact in mlmd, does not returns anything.
+        Updates url of given artifact.
+        Example
+            ```python
+            artifact: mlmd.proto.Artifact = cmf.update_dataset_url(
+             artifact="data.xml.gz"
+             updated_url="/repo/data.xml",
+            )
+            ```
+            Args:
+               artifact: Artifact for which url is to be updated
+               updated_url: The updated url path of the dataset.
+            Returns:
+               Updates artifact in mlmd, does not returns anything.
         """
         for key, value in artifact.properties.items():
             if key == "url":
@@ -849,17 +850,17 @@ class Cmf:
 
     def update_model_url(self, dup_artifact: list, updated_url: str):
         """Updates the URL property of model artifacts.
-           Example: 
-               ```python
-               dup_artifact = [...] # List of artifacts
-               updated_url = "/new/url"
-               updated_artifacts = cmf.update_model_url(dup_artifact, updated_url)
-               ```
-               Args:
-                  dup_artifact: List of artifacts to update.
-                  updated_url: New URL to add to the existing URLs.
-               Returns:
-                  List of updated artifacts.
+        Example:
+            ```python
+            dup_artifact = [...] # List of artifacts
+            updated_url = "/new/url"
+            updated_artifacts = cmf.update_model_url(dup_artifact, updated_url)
+            ```
+            Args:
+               dup_artifact: List of artifacts to update.
+               updated_url: New URL to add to the existing URLs.
+            Returns:
+               List of updated artifacts.
         """
         for art in dup_artifact:
             dup_art = art
@@ -881,25 +882,25 @@ class Cmf:
         custom_properties: t.Optional[t.Dict] = None,
     ) -> mlpb.Artifact:
         """Logs a dataset when the version (hash) is known.
-           Example: 
-             ```python 
-             artifact: mlpb.Artifact = cmf.log_dataset_with_version( 
-                 url="path/to/dataset", 
-                 version="abcdef",
-                 event="output",
-                 props={ "git_repo": "https://github.com/example/repo",
-                         "url": "/path/in/repo", },
-                 custom_properties={ "custom_key": "custom_value", }, 
-                 ) 
-             ```
-             Args: 
-                url: Path to the dataset. 
-                version: Hash or version identifier for the dataset. 
-                event: Takes arguments `INPUT` or `OUTPUT`. 
-                props: Optional properties for the dataset (e.g., git_repo, url). 
-                custom_properties: Optional custom properties for the dataset.
-             Returns:
-                Artifact object from the ML Protocol Buffers library associated with the new dataset artifact. 
+        Example:
+          ```python
+          artifact: mlpb.Artifact = cmf.log_dataset_with_version(
+              url="path/to/dataset",
+              version="abcdef",
+              event="output",
+              props={ "git_repo": "https://github.com/example/repo",
+                      "url": "/path/in/repo", },
+              custom_properties={ "custom_key": "custom_value", },
+              )
+          ```
+          Args:
+             url: Path to the dataset.
+             version: Hash or version identifier for the dataset.
+             event: Takes arguments `INPUT` or `OUTPUT`.
+             props: Optional properties for the dataset (e.g., git_repo, url).
+             custom_properties: Optional custom properties for the dataset.
+          Returns:
+             Artifact object from the ML Protocol Buffers library associated with the new dataset artifact.
         """
 
         props = {} if props is None else props
@@ -925,8 +926,7 @@ class Cmf:
 
             # Quick fix- Updating only the name
             if custom_properties is not None:
-                self.update_existing_artifact(
-                    existing_artifact, custom_properties)
+                self.update_existing_artifact(existing_artifact, custom_properties)
             uri = c_hash
             # update url for existing artifact
             self.update_dataset_url(existing_artifact, props.get("url", ""))
@@ -1050,17 +1050,20 @@ class Cmf:
         # create context if not already created
         if not self.child_context:
             self.create_context(pipeline_stage=name_without_extension)
-            assert self.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+            assert (
+                self.child_context is not None
+            ), f"Failed to create context for {self.pipeline_name}!!"
 
         # create execution if not already created
         if not self.execution:
             self.create_execution(execution_type=name_without_extension)
-            assert self.execution is not None, f"Failed to create execution for {self.pipeline_name}!!"
+            assert (
+                self.execution is not None
+            ), f"Failed to create execution for {self.pipeline_name}!!"
 
-
-        # To Do : Technical Debt. 
+        # To Do : Technical Debt.
         # If the model already exist , then we just link the existing model to the execution
-        # We do not update the model properties . 
+        # We do not update the model properties .
         # We need to append the new properties to the existing model properties
         if custom_properties is None:
             custom_properties = {}
@@ -1093,10 +1096,7 @@ class Cmf:
         else:
             raise RuntimeError("Model commit failed, Model uri empty")
 
-        if (
-            existing_artifact
-            and len(existing_artifact) != 0
-        ):
+        if existing_artifact and len(existing_artifact) != 0:
             # update url for existing artifact
             existing_artifact = self.update_model_url(
                 existing_artifact, url_with_pipeline
@@ -1108,7 +1108,7 @@ class Cmf:
                 input_name=model_uri,
                 event_type=event_type,
             )
-            model_uri =  model_uri + ":" + str(self.execution.id)
+            model_uri = model_uri + ":" + str(self.execution.id)
         else:
             uri = c_hash if c_hash and c_hash.strip() else str(uuid.uuid1())
             model_uri = model_uri + ":" + str(self.execution.id)
@@ -1140,7 +1140,7 @@ class Cmf:
             )
         # custom_properties["Commit"] = model_commit
         self.execution_label_props["Commit"] = model_commit
-        #To DO model nodes should be similar to dataset nodes when we create neo4j
+        # To DO model nodes should be similar to dataset nodes when we create neo4j
         if self.graph:
             self.driver.create_model_node(
                 model_uri,
@@ -1241,10 +1241,7 @@ class Cmf:
         else:
             raise RuntimeError("Model commit failed, Model uri empty")
 
-        if (
-            existing_artifact
-            and len(existing_artifact) != 0
-        ):
+        if existing_artifact and len(existing_artifact) != 0:
             # update url for existing artifact
             existing_artifact = self.update_model_url(existing_artifact, url)
             artifact = link_execution_to_artifact(
@@ -1326,22 +1323,23 @@ class Cmf:
 
         return artifact
 
-    def log_execution_metrics_from_client(self, metrics_name: str,
-                                         custom_properties: t.Optional[t.Dict] = None) -> mlpb.Artifact:
-        """ Logs execution metrics from a client.
-            Data from pre-existing metrics from client side is used to create identical metrics on server side. 
-            Example: 
-              ```python 
-              artifact: mlpb.Artifact = cmf.log_execution_metrics_from_client( 
-                      metrics_name="example_metrics:uri:123", 
-                      custom_properties={"custom_key": "custom_value"}, 
-                      )
-              ``` 
-              Args: 
-                 metrics_name: Name of the metrics in the format "name:uri:execution_id". 
-                 custom_properties: Optional custom properties for the metrics. 
-              Returns: 
-                 Artifact object from the ML Protocol Buffers library associated with the metrics artifact.
+    def log_execution_metrics_from_client(
+        self, metrics_name: str, custom_properties: t.Optional[t.Dict] = None
+    ) -> mlpb.Artifact:
+        """Logs execution metrics from a client.
+        Data from pre-existing metrics from client side is used to create identical metrics on server side.
+        Example:
+          ```python
+          artifact: mlpb.Artifact = cmf.log_execution_metrics_from_client(
+                  metrics_name="example_metrics:uri:123",
+                  custom_properties={"custom_key": "custom_value"},
+                  )
+          ```
+          Args:
+             metrics_name: Name of the metrics in the format "name:uri:execution_id".
+             custom_properties: Optional custom properties for the metrics.
+          Returns:
+             Artifact object from the ML Protocol Buffers library associated with the metrics artifact.
         """
 
         metrics = None
@@ -1354,29 +1352,29 @@ class Cmf:
             execution_id = name_tokens[2]
         else:
             print(f"Error : metrics name {metrics_name} is not in the correct format")
-            return 
+            return
 
-        #we need to add the execution id to the metrics name
+        # we need to add the execution id to the metrics name
         new_metrics_name = f"{name}:{uri}:{str(self.execution.id)}"
         existing_artifacts = self.store.get_artifacts_by_uri(uri)
 
         existing_artifact = existing_artifacts[0] if existing_artifacts else None
-        if not existing_artifact or \
-           ((existing_artifact) and not
-            (existing_artifact.name == new_metrics_name)):  #we need to add the artifact otherwise its already there 
+        if not existing_artifact or (
+            (existing_artifact) and not (existing_artifact.name == new_metrics_name)
+        ):  # we need to add the artifact otherwise its already there
             metrics = create_new_artifact_event_and_attribution(
-            store=self.store,
-            execution_id=self.execution.id,
-            context_id=self.child_context.id,
-            uri=uri,
-            name=new_metrics_name,
-            type_name="Metrics",
-            event_type=mlpb.Event.Type.OUTPUT,
-            properties={"metrics_name": metrics_name},
-            artifact_type_properties={"metrics_name": mlpb.STRING},
-            custom_properties=custom_props,
-            milliseconds_since_epoch=int(time.time() * 1000),
-        )
+                store=self.store,
+                execution_id=self.execution.id,
+                context_id=self.child_context.id,
+                uri=uri,
+                name=new_metrics_name,
+                type_name="Metrics",
+                event_type=mlpb.Event.Type.OUTPUT,
+                properties={"metrics_name": metrics_name},
+                artifact_type_properties={"metrics_name": mlpb.STRING},
+                custom_properties=custom_props,
+                milliseconds_since_epoch=int(time.time() * 1000),
+            )
             if self.graph:
                 # To do create execution_links
                 self.driver.create_metrics_node(
@@ -1401,7 +1399,6 @@ class Cmf:
                     self.input_artifacts, child_artifact, self.execution_label_props
                 )
         return metrics
-
 
     def log_execution_metrics(
         self, metrics_name: str, custom_properties: t.Optional[t.Dict] = None
@@ -1430,12 +1427,16 @@ class Cmf:
         # create context if not already created
         if not self.child_context:
             self.create_context(pipeline_stage=name_without_extension)
-            assert self.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+            assert (
+                self.child_context is not None
+            ), f"Failed to create context for {self.pipeline_name}!!"
 
         # create execution if not already created
         if not self.execution:
             self.create_execution(execution_type=name_without_extension)
-            assert self.execution is not None, f"Failed to create execution for {self.pipeline_name}!!"
+            assert (
+                self.execution is not None
+            ), f"Failed to create execution for {self.pipeline_name}!!"
 
         custom_props = {} if custom_properties is None else custom_properties
         uri = str(uuid.uuid1())
@@ -1506,7 +1507,7 @@ class Cmf:
             self.metrics[metrics_name][1] = custom_properties
 
     def commit_metrics(self, metrics_name: str):
-        """ Writes the in-memory metrics to a Parquet file, commits the metrics file associated with the metrics id to DVC and Git,
+        """Writes the in-memory metrics to a Parquet file, commits the metrics file associated with the metrics id to DVC and Git,
         and stores the artifact in MLMD.
 
         Example:
@@ -1530,20 +1531,26 @@ class Cmf:
         # create context if not already created
         if not self.child_context:
             self.create_context(pipeline_stage=name_without_extension)
-            assert self.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+            assert (
+                self.child_context is not None
+            ), f"Failed to create context for {self.pipeline_name}!!"
 
         # create execution if not already created
         if not self.execution:
             self.create_execution(execution_type=name_without_extension)
-            assert self.execution is not None, f"Failed to create execution for {self.pipeline_name}!!"
+            assert (
+                self.execution is not None
+            ), f"Failed to create execution for {self.pipeline_name}!!"
 
-        
-        directory_path = os.path.join(self.ARTIFACTS_PATH, self.execution.properties["Execution_uuid"].string_value.split(',')[0], self.METRICS_PATH)
+        directory_path = os.path.join(
+            self.ARTIFACTS_PATH,
+            self.execution.properties["Execution_uuid"].string_value.split(",")[0],
+            self.METRICS_PATH,
+        )
         os.makedirs(directory_path, exist_ok=True)
-        metrics_df = pd.DataFrame.from_dict(
-            self.metrics[metrics_name], orient="index")
+        metrics_df = pd.DataFrame.from_dict(self.metrics[metrics_name], orient="index")
         metrics_df.index.names = ["SequenceNumber"]
-        metrics_path = os.path.join(directory_path,metrics_name)
+        metrics_path = os.path.join(directory_path, metrics_name)
         metrics_df.to_parquet(metrics_path)
         commit_output(metrics_path, self.execution.id)
         uri = dvc_get_hash(metrics_path)
@@ -1563,7 +1570,7 @@ class Cmf:
             + ":"
             + str(uuid.uuid1())
         )
-        # not needed as property 'name' is part of artifact 
+        # not needed as property 'name' is part of artifact
         # to maintain uniformity - Commit goes propeties of the artifact
         # custom_props = {"Name": metrics_name, "Commit": metrics_commit}
         custom_props = {}
@@ -1612,7 +1619,13 @@ class Cmf:
         os.chdir(logging_dir)
         return metrics
 
-    def commit_existing_metrics(self, metrics_name: str, uri: str, props: t.Optional[t.Dict] = None, custom_properties: t.Optional[t.Dict] = None):
+    def commit_existing_metrics(
+        self,
+        metrics_name: str,
+        uri: str,
+        props: t.Optional[t.Dict] = None,
+        custom_properties: t.Optional[t.Dict] = None,
+    ):
         """
         Commits existing metrics associated with the given URI to MLMD.
         Example:
@@ -1628,12 +1641,11 @@ class Cmf:
            Artifact object from the ML Protocol Buffers library associated with the existing metrics artifact.
         """
 
-        custom_props =  {} if custom_properties is None else custom_properties
+        custom_props = {} if custom_properties is None else custom_properties
         c_hash = uri.strip()
         existing_artifact = []
         existing_artifact.extend(self.store.get_artifacts_by_uri(c_hash))
-        if (existing_artifact
-            and len(existing_artifact) != 0 ):
+        if existing_artifact and len(existing_artifact) != 0:
             metrics = link_execution_to_artifact(
                 store=self.store,
                 execution_id=self.execution.id,
@@ -1685,10 +1697,9 @@ class Cmf:
             )
         return metrics
 
-
     def log_validation_output(
         self, version: str, custom_properties: t.Optional[t.Dict] = None
-    ) -> object: 
+    ) -> object:
         uri = str(uuid.uuid1())
         return create_new_artifact_event_and_attribution(
             store=self.store,
@@ -1704,28 +1715,26 @@ class Cmf:
             milliseconds_since_epoch=int(time.time() * 1000),
         )
 
-
     def update_existing_artifact(
         self, artifact: mlpb.Artifact, custom_properties: t.Dict
     ):
-        """ Updates an existing artifact with the provided custom properties and stores it back to MLMD. 
-          Example: 
-          ```python
-                update_artifact=cmf.update_existing_artifact(existing_artifact, {"key1": "updated_value"}) 
-          ``` 
-          Args: 
-             artifact: Existing artifact to be updated. 
-             custom_properties: Dictionary containing custom properties to update. 
-          Returns: 
-             None 
-       """
+        """Updates an existing artifact with the provided custom properties and stores it back to MLMD.
+        Example:
+        ```python
+              update_artifact=cmf.update_existing_artifact(existing_artifact, {"key1": "updated_value"})
+        ```
+        Args:
+           artifact: Existing artifact to be updated.
+           custom_properties: Dictionary containing custom properties to update.
+        Returns:
+           None
+        """
         for key, value in custom_properties.items():
             if isinstance(value, int):
                 artifact.custom_properties[key].int_value = value
             else:
                 artifact.custom_properties[key].string_value = str(value)
         put_artifact(self.store, artifact)
-        
 
     def get_artifact(self, artifact_id: int) -> mlpb.Artifact:
         """Gets the artifact object from mlmd"""
@@ -1737,8 +1746,7 @@ class Cmf:
     def link_artifacts(
         self, artifact_source: mlpb.Artifact, artifact_target: mlpb.Artifact
     ):
-        self.driver.create_links(artifact_source.name,
-                                 artifact_target.name, "derived")
+        self.driver.create_links(artifact_source.name, artifact_target.name, "derived")
 
     def update_model_output(self, artifact: mlpb.Artifact):
         """updates an artifact"""
@@ -1764,7 +1772,11 @@ class Cmf:
     def read_dataslice(self, name: str) -> pd.DataFrame:
         """Reads the dataslice"""
         # To do checkout if not there
-        directory_path = os.path.join(self.ARTIFACTS_PATH, self.execution.properties["Execution_uuid"].string_value.split(',')[0], self.DATASLICE_PATH)
+        directory_path = os.path.join(
+            self.ARTIFACTS_PATH,
+            self.execution.properties["Execution_uuid"].string_value.split(",")[0],
+            self.DATASLICE_PATH,
+        )
         name = os.path.join(directory_path, name)
         df = pd.read_parquet(name)
         return df
@@ -1775,7 +1787,7 @@ class Cmf:
         """Updates a dataslice record in a Parquet file with the provided custom properties.
         Example:
         ```python
-           dataslice=cmf.update_dataslice("dataslice_file.parquet", "record_id", 
+           dataslice=cmf.update_dataslice("dataslice_file.parquet", "record_id",
            {"key1": "updated_value"})
         ```
         Args:
@@ -1786,7 +1798,11 @@ class Cmf:
         Returns:
            None
         """
-        directory_path = os.path.join(self.ARTIFACTS_PATH, self.execution.properties["Execution_uuid"].string_value.split(',')[0], self.DATASLICE_PATH)
+        directory_path = os.path.join(
+            self.ARTIFACTS_PATH,
+            self.execution.properties["Execution_uuid"].string_value.split(",")[0],
+            self.DATASLICE_PATH,
+        )
         name = os.path.join(directory_path, name)
         df = pd.read_parquet(name)
         temp_dict = df.to_dict("index")
@@ -1827,7 +1843,7 @@ class Cmf:
             """
 
             self.props[path] = {}
-            self.props[path]['hash'] = dvc_get_hash(path)
+            self.props[path]["hash"] = dvc_get_hash(path)
             parent_path = path.rsplit("/", 1)[0]
             self.data_parent = parent_path.rsplit("/", 1)[1]
             if custom_properties:
@@ -1863,20 +1879,30 @@ class Cmf:
             # create context if not already created
             if not self.writer.child_context:
                 self.writer.create_context(pipeline_stage=name_without_extension)
-                assert self.writer.child_context is not None, f"Failed to create context for {self.pipeline_name}!!"
+                assert (
+                    self.writer.child_context is not None
+                ), f"Failed to create context for {self.pipeline_name}!!"
 
             # create execution if not already created
             if not self.writer.execution:
                 self.writer.create_execution(execution_type=name_without_extension)
-                assert self.writer.execution is not None, f"Failed to create execution for {self.pipeline_name}!!"
+                assert (
+                    self.writer.execution is not None
+                ), f"Failed to create execution for {self.pipeline_name}!!"
 
-            directory_path = os.path.join(self.writer.ARTIFACTS_PATH, self.writer.execution.properties["Execution_uuid"].string_value.split(',')[0], self.writer.DATASLICE_PATH)
+            directory_path = os.path.join(
+                self.writer.ARTIFACTS_PATH,
+                self.writer.execution.properties["Execution_uuid"].string_value.split(
+                    ","
+                )[0],
+                self.writer.DATASLICE_PATH,
+            )
             os.makedirs(directory_path, exist_ok=True)
             custom_props = {} if custom_properties is None else custom_properties
             git_repo = git_get_repo()
             dataslice_df = pd.DataFrame.from_dict(self.props, orient="index")
             dataslice_df.index.names = ["Path"]
-            dataslice_path = os.path.join(directory_path,self.name)
+            dataslice_path = os.path.join(directory_path, self.name)
             dataslice_df.to_parquet(dataslice_path)
             existing_artifact = []
 
@@ -1890,8 +1916,7 @@ class Cmf:
             url = dvc_get_url(dataslice_path)
             dvc_url_with_pipeline = f"{self.writer.parent_context.name}:{url}"
             if c_hash and c_hash.strip():
-                existing_artifact.extend(
-                    self.writer.store.get_artifacts_by_uri(c_hash))
+                existing_artifact.extend(self.writer.store.get_artifacts_by_uri(c_hash))
             if existing_artifact and len(existing_artifact) != 0:
                 print("Adding to existing data slice")
                 # Haven't added event type in this if cond, is it not needed??
@@ -1902,12 +1927,14 @@ class Cmf:
                     input_name=dataslice_path + ":" + c_hash,
                 )
             else:
-                props={
+                props = (
+                    {
                         "git_repo": str(git_repo),
                         # passing c_hash value to commit
                         "Commit": str(dataslice_commit),
                         "url": str(dvc_url_with_pipeline),
                     },
+                )
                 slice = create_new_artifact_event_and_attribution(
                     store=self.writer.store,
                     execution_id=self.writer.execution.id,
@@ -1932,23 +1959,31 @@ class Cmf:
                 )
             if self.writer.graph:
                 self.writer.driver.create_dataslice_node(
-                    self.name, dataslice_path + ":" + c_hash, c_hash, self.data_parent, props
+                    self.name,
+                    dataslice_path + ":" + c_hash,
+                    c_hash,
+                    self.data_parent,
+                    props,
                 )
             os.chdir(logging_dir)
             return slice
 
         # commit existing dataslice to server
-        def commit_existing(self, uri: str, props: t.Optional[t.Dict] = None, custom_properties: t.Optional[t.Dict] = None) -> None:
+        def commit_existing(
+            self,
+            uri: str,
+            props: t.Optional[t.Dict] = None,
+            custom_properties: t.Optional[t.Dict] = None,
+        ) -> None:
             custom_props = {} if custom_properties is None else custom_properties
             c_hash = uri.strip()
             dataslice_commit = c_hash
             existing_artifact = []
             if c_hash and c_hash.strip():
-                existing_artifact.extend(
-                    self.writer.store.get_artifacts_by_uri(c_hash))
+                existing_artifact.extend(self.writer.store.get_artifacts_by_uri(c_hash))
             if existing_artifact and len(existing_artifact) != 0:
                 print("Adding to existing data slice")
-                 # Haven't added event type in this if cond, is it not needed??
+                # Haven't added event type in this if cond, is it not needed??
                 slice = link_execution_to_input_artifact(
                     store=self.writer.store,
                     execution_id=self.writer.execution.id,
@@ -1996,8 +2031,14 @@ class Cmf:
 #                print(last)
 #                os.symlink(str(index), slicedir + "/ " + last)
 
-def metadata_push(pipeline_name: str, filepath = "./mlmd", tensorboard_path: str = "", execution_id: str = ""):
-    """ Pushes MLMD file to CMF-server.
+
+def metadata_push(
+    pipeline_name: str,
+    filepath="./mlmd",
+    tensorboard_path: str = "",
+    execution_id: str = "",
+):
+    """Pushes MLMD file to CMF-server.
     Example:
     ```python
          result = metadata_push("example_pipeline", "mlmd_file", "3")
@@ -2016,44 +2057,47 @@ def metadata_push(pipeline_name: str, filepath = "./mlmd", tensorboard_path: str
     output = _metadata_push(pipeline_name, filepath, execution_id, tensorboard_path)
     return output
 
-def metadata_pull(pipeline_name: str, filepath = "./mlmd", execution_id: str = ""):
-    """ Pulls MLMD file from CMF-server. 
-     Example: 
-     ```python 
-          result = metadata_pull("example_pipeline", "./mlmd_directory", "execution_123") 
-     ``` 
-     Args: 
-        pipeline_name: Name of the pipeline. 
-        filepath: File path to store the MLMD file. 
-        execution_id: Optional execution ID. 
-     Returns: 
-        Message from the _metadata_pull function. 
-     """
-    # Required arguments:  pipeline_name 
-    #Optional arguments: Execution_ID, filepath(file path to store mlmd file) 
+
+def metadata_pull(pipeline_name: str, filepath="./mlmd", execution_id: str = ""):
+    """Pulls MLMD file from CMF-server.
+    Example:
+    ```python
+         result = metadata_pull("example_pipeline", "./mlmd_directory", "execution_123")
+    ```
+    Args:
+       pipeline_name: Name of the pipeline.
+       filepath: File path to store the MLMD file.
+       execution_id: Optional execution ID.
+    Returns:
+       Message from the _metadata_pull function.
+    """
+    # Required arguments:  pipeline_name
+    # Optional arguments: Execution_ID, filepath(file path to store mlmd file)
     output = _metadata_pull(pipeline_name, filepath, execution_id)
     return output
 
-def metadata_export(pipeline_name: str, jsonfilepath: str = "", filepath = "./mlmd"):
-    """ Export local mlmd's metadata in json format to a json file. 
-     Example: 
-     ```python 
-          result = metadata_pull("example_pipeline", "./jsonfile", "./mlmd_directory") 
-     ``` 
-     Args: 
-        pipeline_name: Name of the pipeline. 
-        jsonfilepath: File path of json file. 
-        filepath: File path to store the MLMD file. 
-     Returns: 
-        Message from the _metadata_pull function. 
-     """
-    # Required arguments:  pipeline_name 
-    #Optional arguments: jsonfilepath, filepath(file path to store mlmd file) 
+
+def metadata_export(pipeline_name: str, jsonfilepath: str = "", filepath="./mlmd"):
+    """Export local mlmd's metadata in json format to a json file.
+    Example:
+    ```python
+         result = metadata_pull("example_pipeline", "./jsonfile", "./mlmd_directory")
+    ```
+    Args:
+       pipeline_name: Name of the pipeline.
+       jsonfilepath: File path of json file.
+       filepath: File path to store the MLMD file.
+    Returns:
+       Message from the _metadata_pull function.
+    """
+    # Required arguments:  pipeline_name
+    # Optional arguments: jsonfilepath, filepath(file path to store mlmd file)
     output = _metadata_export(pipeline_name, jsonfilepath, filepath)
     return output
 
-def artifact_pull(pipeline_name: str, filepath = "./mlmd"):
-    """ Pulls artifacts from the initialized repository.
+
+def artifact_pull(pipeline_name: str, filepath="./mlmd"):
+    """Pulls artifacts from the initialized repository.
 
     Example:
     ```python
@@ -2072,18 +2116,19 @@ def artifact_pull(pipeline_name: str, filepath = "./mlmd"):
     output = _artifact_pull(pipeline_name, filepath)
     return output
 
+
 def artifact_pull_single(pipeline_name: str, filepath: str, artifact_name: str):
-    """ Pulls a single artifact from the initialized repository. 
-    Example: 
-    ```python 
-        result = artifact_pull_single("example_pipeline", "./mlmd_directory", "example_artifact") 
+    """Pulls a single artifact from the initialized repository.
+    Example:
+    ```python
+        result = artifact_pull_single("example_pipeline", "./mlmd_directory", "example_artifact")
     ```
-    Args: 
-       pipeline_name: Name of the pipeline. 
-       filepath: Path to store the artifact. 
-       artifact_name: Name of the artifact. 
+    Args:
+       pipeline_name: Name of the pipeline.
+       filepath: Path to store the artifact.
+       artifact_name: Name of the artifact.
     Returns:
-       Output from the _artifact_pull_single function. 
+       Output from the _artifact_pull_single function.
     """
 
     # Required arguments: Pipeline_name
@@ -2091,16 +2136,17 @@ def artifact_pull_single(pipeline_name: str, filepath: str, artifact_name: str):
     output = _artifact_pull_single(pipeline_name, filepath, artifact_name)
     return output
 
-def artifact_push(pipeline_name: str, filepath = "./mlmd"):
-    """ Pushes artifacts to the initialized repository.
+
+def artifact_push(pipeline_name: str, filepath="./mlmd"):
+    """Pushes artifacts to the initialized repository.
 
     Example:
     ```python
          result = artifact_push("example_pipeline", "./mlmd_directory")
     ```
-    Args: 
-       pipeline_name: Name of the pipeline. 
-       filepath: Path to store the artifact. 
+    Args:
+       pipeline_name: Name of the pipeline.
+       filepath: Path to store the artifact.
     Returns:
         Output from the _artifact_push function.
     """
@@ -2108,56 +2154,58 @@ def artifact_push(pipeline_name: str, filepath = "./mlmd"):
     output = _artifact_push(pipeline_name, filepath)
     return output
 
+
 def cmf_init_show():
-    """ Initializes and shows details of the CMF command. 
-    Example: 
-    ```python 
-         result = cmf_init_show() 
-    ``` 
-    Returns: 
-       Output from the _cmf_cmd_init function. 
-    """
-
-    output=_cmf_cmd_init()
-    return output
-
-def cmf_init(type: str = "",
-        path: str = "",
-        git_remote_url: str = "",
-        cmf_server_url: str = "",
-        neo4j_user: str = "",
-        neo4j_password: str = "",
-        neo4j_uri: str = "",
-        url: str = "",
-        endpoint_url: str = "",
-        access_key_id: str = "",
-        secret_key: str = "",
-        session_token: str = "",
-        user: str = "",
-        password: str = "",
-        port: int = 0,
-        osdf_path: str = "",
-        osdf_cache: str = "",
-        key_id: str = "",
-        key_path: str = "",
-        key_issuer: str = "",
-         ):
-
-    """ Initializes the CMF configuration based on the provided parameters. 
+    """Initializes and shows details of the CMF command.
     Example:
     ```python
-       cmf_init( type="local", 
+         result = cmf_init_show()
+    ```
+    Returns:
+       Output from the _cmf_cmd_init function.
+    """
+
+    output = _cmf_cmd_init()
+    return output
+
+
+def cmf_init(
+    type: str = "",
+    path: str = "",
+    git_remote_url: str = "",
+    cmf_server_url: str = "",
+    neo4j_user: str = "",
+    neo4j_password: str = "",
+    neo4j_uri: str = "",
+    url: str = "",
+    endpoint_url: str = "",
+    access_key_id: str = "",
+    secret_key: str = "",
+    session_token: str = "",
+    user: str = "",
+    password: str = "",
+    port: int = 0,
+    osdf_path: str = "",
+    osdf_cache: str = "",
+    key_id: str = "",
+    key_path: str = "",
+    key_issuer: str = "",
+):
+    """Initializes the CMF configuration based on the provided parameters.
+    Example:
+    ```python
+       cmf_init( type="local",
                  path="/path/to/re",
                  git_remote_url="git@github.com:user/repo.git",
                  cmf_server_url="http://cmf-server"
-                 neo4j_user", 
+                 neo4j_user",
                  neo4j_password="password",
                  neo4j_uri="bolt://localhost:76"
                )
     ```
-    Args: 
+    Args:
        type: Type of repository ("local", "minioS3", "amazonS3", "sshremote")
-       path: Path for the local repository. 
+       path: Path for the local repository.
        git_remote_url: Git remote URL for version control.
        cmf_server_url: CMF server URL.
        neo4j_user: Neo4j database username.
@@ -2166,10 +2214,10 @@ def cmf_init(type: str = "",
        url: URL for MinioS3 or AmazonS3.
        endpoint_url: Endpoint URL for MinioS3.
        access_key_id: Access key ID for MinioS3 or AmazonS3.
-       secret_key: Secret key for MinioS3 or AmazonS3. 
+       secret_key: Secret key for MinioS3 or AmazonS3.
        session_token: Session token for AmazonS3.
        user: SSH remote username.
-       password: SSH remote password. 
+       password: SSH remote password.
        port: SSH remote port.
        osdf_path: OSDF Origin Path.
        osdf_cache: OSDF Cache Path (Optional).
@@ -2182,44 +2230,62 @@ def cmf_init(type: str = "",
 
     if type == "":
         return print("Error: Type is not provided")
-    if type not in ["local","minioS3","amazonS3","sshremote","osdfremote"]:
-        return print("Error: Type value is undefined"+ " "+type+".Expected: "+",".join(["local","minioS3","amazonS3","sshremote","osdfremote"]))
+    if type not in ["local", "minioS3", "amazonS3", "sshremote", "osdfremote"]:
+        return print(
+            "Error: Type value is undefined"
+            + " "
+            + type
+            + ".Expected: "
+            + ",".join(["local", "minioS3", "amazonS3", "sshremote", "osdfremote"])
+        )
 
-    if neo4j_user != "" and  neo4j_password != "" and neo4j_uri != "":
+    if neo4j_user != "" and neo4j_password != "" and neo4j_uri != "":
         pass
-    elif neo4j_user == "" and  neo4j_password == "" and neo4j_uri == "":
+    elif neo4j_user == "" and neo4j_password == "" and neo4j_uri == "":
         pass
     else:
-        return print("Error: Enter all neo4j parameters.") 
+        return print("Error: Enter all neo4j parameters.")
 
-    args={'path': path,
-        'git_remote_url': git_remote_url,
-        'url': url,
-        'endpoint_url': endpoint_url,
-        'access_key_id': access_key_id,
-        'secret_key': secret_key,
-        'session_token': session_token,
-        'user': user,
-        'password': password,
-        'osdf_path': osdf_path,
-        'osdf_cache': osdf_cache,
-        'key_id': key_id,
-        'key_path': key_path, 
-        'key-issuer': key_issuer,
-        }
+    args = {
+        "path": path,
+        "git_remote_url": git_remote_url,
+        "url": url,
+        "endpoint_url": endpoint_url,
+        "access_key_id": access_key_id,
+        "secret_key": secret_key,
+        "session_token": session_token,
+        "user": user,
+        "password": password,
+        "osdf_path": osdf_path,
+        "osdf_cache": osdf_cache,
+        "key_id": key_id,
+        "key_path": key_path,
+        "key-issuer": key_issuer,
+    }
 
-    status_args=non_related_args(type, args)
+    status_args = non_related_args(type, args)
 
-    if type == "local" and path != "" and  git_remote_url != "" :
+    if type == "local" and path != "" and git_remote_url != "":
         """Initialize local repository"""
         output = _init_local(
             path, git_remote_url, cmf_server_url, neo4j_user, neo4j_password, neo4j_uri
         )
         if status_args != []:
-            print("There are non-related arguments: "+",".join(status_args)+".Please remove them.")
+            print(
+                "There are non-related arguments: "
+                + ",".join(status_args)
+                + ".Please remove them."
+            )
         return output
-         
-    elif type == "minioS3" and url != "" and endpoint_url != "" and access_key_id != "" and secret_key != "" and git_remote_url != "":
+
+    elif (
+        type == "minioS3"
+        and url != ""
+        and endpoint_url != ""
+        and access_key_id != ""
+        and secret_key != ""
+        and git_remote_url != ""
+    ):
         """Initialize minioS3 repository"""
         output = _init_minioS3(
             url,
@@ -2233,10 +2299,20 @@ def cmf_init(type: str = "",
             neo4j_uri,
         )
         if status_args != []:
-            print("There are non-related arguments: "+",".join(status_args)+".Please remove them.")
+            print(
+                "There are non-related arguments: "
+                + ",".join(status_args)
+                + ".Please remove them."
+            )
         return output
 
-    elif type == "amazonS3" and url != "" and access_key_id != "" and secret_key != "" and git_remote_url != "":
+    elif (
+        type == "amazonS3"
+        and url != ""
+        and access_key_id != ""
+        and secret_key != ""
+        and git_remote_url != ""
+    ):
         """Initialize amazonS3 repository"""
         output = _init_amazonS3(
             url,
@@ -2250,11 +2326,22 @@ def cmf_init(type: str = "",
             neo4j_uri,
         )
         if status_args != []:
-            print("There are non-related arguments: "+",".join(status_args)+".Please remove them.")
+            print(
+                "There are non-related arguments: "
+                + ",".join(status_args)
+                + ".Please remove them."
+            )
 
         return output
 
-    elif type == "sshremote" and path != "" and user != "" and port != 0 and password != "" and git_remote_url != "":
+    elif (
+        type == "sshremote"
+        and path != ""
+        and user != ""
+        and port != 0
+        and password != ""
+        and git_remote_url != ""
+    ):
         """Initialize sshremote repository"""
         output = _init_sshremote(
             path,
@@ -2268,11 +2355,22 @@ def cmf_init(type: str = "",
             neo4j_uri,
         )
         if status_args != []:
-            print("There are non-related arguments: "+",".join(status_args)+".Please remove them.")
+            print(
+                "There are non-related arguments: "
+                + ",".join(status_args)
+                + ".Please remove them."
+            )
 
         return output
 
-    elif type == "osdfremote" and osdf_path != "" and key_id != "" and key_path != "" and key_issuer != "" and git_remote_url != "":
+    elif (
+        type == "osdfremote"
+        and osdf_path != ""
+        and key_id != ""
+        and key_path != ""
+        and key_issuer != ""
+        and git_remote_url != ""
+    ):
         """Initialize osdfremote repository"""
         output = _init_osdfremote(
             osdf_path,
@@ -2287,7 +2385,11 @@ def cmf_init(type: str = "",
             neo4j_uri,
         )
         if status_args != []:
-            print("There are non-related arguments: "+",".join(status_args)+".Please remove them.")
+            print(
+                "There are non-related arguments: "
+                + ",".join(status_args)
+                + ".Please remove them."
+            )
 
         return output
 
@@ -2295,25 +2397,39 @@ def cmf_init(type: str = "",
         print("Error: Enter all arguments")
 
 
-def non_related_args(type : str, args : dict):
-    available_args=[i for i, j in args.items() if j != ""]
-    local=["path", "git_remote_url"]
-    minioS3=["url", "endpoint_url", "access_key_id", "secret_key", "git_remote_url"]
-    amazonS3=["url", "access_key_id", "secret_key", "session_token", "git_remote_url"]
-    sshremote=["path", "user", "port", "password", "git_remote_url"]
-    osdfremote=["osdf_path", "osdf_cache", "key_id", "key_path", "key-issuer", "git_remote_url"]
+def non_related_args(type: str, args: dict):
+    available_args = [i for i, j in args.items() if j != ""]
+    local = ["path", "git_remote_url"]
+    minioS3 = ["url", "endpoint_url", "access_key_id", "secret_key", "git_remote_url"]
+    amazonS3 = ["url", "access_key_id", "secret_key", "session_token", "git_remote_url"]
+    sshremote = ["path", "user", "port", "password", "git_remote_url"]
+    osdfremote = [
+        "osdf_path",
+        "osdf_cache",
+        "key_id",
+        "key_path",
+        "key-issuer",
+        "git_remote_url",
+    ]
 
+    dict_repository_args = {
+        "local": local,
+        "minioS3": minioS3,
+        "amazonS3": amazonS3,
+        "sshremote": sshremote,
+        "osdfremote": osdfremote,
+    }
 
-    dict_repository_args={"local" : local, "minioS3" : minioS3, "amazonS3" : amazonS3, "sshremote" : sshremote, "osdfremote": osdfremote}
-    
-    for repo,arg in dict_repository_args.items():
-        if repo ==type:
-            non_related_args=list(set(available_args)-set(dict_repository_args[repo]))
+    for repo, arg in dict_repository_args.items():
+        if repo == type:
+            non_related_args = list(
+                set(available_args) - set(dict_repository_args[repo])
+            )
     return non_related_args
 
 
-def pipeline_list(filepath = "./mlmd"):
-    """ Display a list of pipeline name(s) from the available mlmd file.
+def pipeline_list(filepath="./mlmd"):
+    """Display a list of pipeline name(s) from the available mlmd file.
 
     Example:
     ```python
@@ -2321,7 +2437,7 @@ def pipeline_list(filepath = "./mlmd"):
     ```
 
     Args:
-        filepath: File path to store the MLMD file. 
+        filepath: File path to store the MLMD file.
     Returns:
         Output from the _pipeline_list function.
     """
@@ -2331,18 +2447,18 @@ def pipeline_list(filepath = "./mlmd"):
     return output
 
 
-def execution_list(pipeline_name: str, filepath = "./mlmd", execution_id: str = ""):
+def execution_list(pipeline_name: str, filepath="./mlmd", execution_id: str = ""):
     """Displays executions from the MLMD file with a few properties in a 7-column table, limited to 20 records per page.
-    Example: 
-    ```python 
-        result = _execution_list("example_pipeline", "./mlmd_directory", "example_execution_id") 
+    Example:
+    ```python
+        result = _execution_list("example_pipeline", "./mlmd_directory", "example_execution_id")
     ```
-    Args: 
-       pipeline_name: Name of the pipeline. 
-       filepath: Path to store the mlmd file. 
+    Args:
+       pipeline_name: Name of the pipeline.
+       filepath: Path to store the mlmd file.
        execution_id: Executions for particular execution id.
     Returns:
-       Output from the _execution_list function. 
+       Output from the _execution_list function.
     """
 
     # Required arguments: pipeline_name
@@ -2351,18 +2467,18 @@ def execution_list(pipeline_name: str, filepath = "./mlmd", execution_id: str = 
     return output
 
 
-def artifact_list(pipeline_name: str, filepath = "./mlmd", artifact_name: str = ""):
-    """ Displays artifacts from the MLMD file with a few properties in a 7-column table, limited to 20 records per page.
-    Example: 
-    ```python 
-        result = _artifact_list("example_pipeline", "./mlmd_directory", "example_artifact_name") 
+def artifact_list(pipeline_name: str, filepath="./mlmd", artifact_name: str = ""):
+    """Displays artifacts from the MLMD file with a few properties in a 7-column table, limited to 20 records per page.
+    Example:
+    ```python
+        result = _artifact_list("example_pipeline", "./mlmd_directory", "example_artifact_name")
     ```
-    Args: 
-       pipeline_name: Name of the pipeline. 
-       filepath: Path to store the mlmd file. 
+    Args:
+       pipeline_name: Name of the pipeline.
+       filepath: Path to store the mlmd file.
        artifact_name: Artifacts for particular artifact name.
     Returns:
-       Output from the _artifact_list function. 
+       Output from the _artifact_list function.
     """
 
     # Required arguments: pipeline_name

@@ -15,6 +15,7 @@
 ###
 from cmflib.cmf_exception_handling import CmfResponse
 
+
 class CmfParserError(Exception):
     """Base class for CLI parser errors."""
 
@@ -59,10 +60,8 @@ def main(argv=None):
     except CmfResponse as e:
         print(e.handle())
     except CmfParserError:
-        pass    
+        pass
     except KeyboardInterrupt:
         print("Interrupted by the user")
     except Exception as e:
         print(e)
-   
-    

@@ -17,7 +17,11 @@
 #!/usr/bin/env python3
 import argparse
 import os
-from cmflib.cmf_exception_handling import Neo4jArgumentNotProvided, CmfInitComplete, CmfInitFailed
+from cmflib.cmf_exception_handling import (
+    Neo4jArgumentNotProvided,
+    CmfInitComplete,
+    CmfInitFailed,
+)
 from cmflib.cli.command import CmdBase
 from cmflib.dvc_wrapper import (
     git_quiet_init,
@@ -29,6 +33,7 @@ from cmflib.dvc_wrapper import (
 )
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
+
 
 class CmdInitLocal(CmdBase):
     def run(self):
@@ -64,7 +69,7 @@ class CmdInitLocal(CmdBase):
             raise Neo4jArgumentNotProvided
 
         output = is_git_repo()
-        
+
         if not output:
             branch_name = "master"
             print("Starting git init.")

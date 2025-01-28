@@ -21,12 +21,12 @@ import paramiko
 # import warnings
 # warnings.filterwarnings(action='ignore', module='.*paramiko.*')
 
+
 class SSHremoteArtifacts:
 
     def __init__(self, dvc_config_op):
         self.user = dvc_config_op["remote.ssh-storage.user"]
         self.password = dvc_config_op["remote.ssh-storage.password"]
-
 
     def download_file(
         self,
@@ -50,10 +50,12 @@ class SSHremoteArtifacts:
             dir_path, _ = download_loc.rsplit("/", 1)
         if dir_path != "":
             # creates subfolders needed as per artifacts' folder structure
-            os.makedirs(dir_path, mode=0o777, exist_ok=True) 
+            os.makedirs(dir_path, mode=0o777, exist_ok=True)
 
         response = ""
-        abs_download_loc = os.path.abspath(os.path.join(current_directory, download_loc))
+        abs_download_loc = os.path.abspath(
+            os.path.join(current_directory, download_loc)
+        )
         try:
             response = sftp.put(object_name, abs_download_loc)
             # we can close sftp connection as we have already downloaded the file
@@ -62,13 +64,12 @@ class SSHremoteArtifacts:
             if response:
                 return object_name, abs_download_loc, True
             else:
-                return  object_name, abs_download_loc, False
+                return object_name, abs_download_loc, False
         except Exception as e:
             # this exception is for function sftp.put()
             sftp.close()
             ssh.close()
-            return  object_name, abs_download_loc, False
-
+            return object_name, abs_download_loc, False
 
     def download_directory(
         self,
@@ -92,11 +93,13 @@ class SSHremoteArtifacts:
             dir_path, _ = download_loc.rsplit("/", 1)
         if dir_path != "":
             # creates subfolders needed as per artifacts' folder structure
-            os.makedirs(dir_path, mode=0o777, exist_ok=True) 
+            os.makedirs(dir_path, mode=0o777, exist_ok=True)
 
         response = ""
-        abs_download_loc = os.path.abspath(os.path.join(current_directory, download_loc))
-                                               
+        abs_download_loc = os.path.abspath(
+            os.path.join(current_directory, download_loc)
+        )
+
         """"
         if object_name ends with .dir - it is a directory.
         we download .dir object with 'temp_dir' and remove 
@@ -109,7 +112,7 @@ class SSHremoteArtifacts:
         temp_dir = f"{abs_download_loc}/temp_dir"
         try:
             response = sftp.put(object_name, temp_dir)
-            with open(temp_dir, 'r') as file:
+            with open(temp_dir, "r") as file:
                 tracked_files = eval(file.read())
 
             # removing temp_dir
@@ -121,19 +124,19 @@ class SSHremoteArtifacts:
             we need to remove the hash of the .dir from the object_name
             which will leave us with the artifact repo path
             """
-            
+
             repo_path = "/".join(object_name.split("/")[:-2])
 
             total_files_in_directory = 0
             files_downloaded = 0
             for file_info in tracked_files:
                 total_files_in_directory += 1
-                relpath = file_info['relpath']
-                md5_val = file_info['md5']
+                relpath = file_info["relpath"]
+                md5_val = file_info["md5"]
                 # download_loc =  /home/user/datatslice/example-get-started/test/artifacts/raw_data
                 # md5_val = a237457aa730c396e5acdbc5a64c8453
                 # we need a2/37457aa730c396e5acdbc5a64c8453
-                formatted_md5 = md5_val[:2] + '/' + md5_val[2:]
+                formatted_md5 = md5_val[:2] + "/" + md5_val[2:]
                 temp_download_loc = f"{abs_download_loc}/{relpath}"
                 temp_object_name = f"{repo_path}/{formatted_md5}"
                 try:
@@ -142,7 +145,9 @@ class SSHremoteArtifacts:
                     ssh.close()
                     if obj:
                         files_downloaded += 1
-                        print(f"object {temp_object_name} downloaded at {temp_download_loc}.")
+                        print(
+                            f"object {temp_object_name} downloaded at {temp_download_loc}."
+                        )
                     else:
                         print(f"object {temp_object_name} is not downloaded.")
                 except Exception as e:
@@ -151,16 +156,16 @@ class SSHremoteArtifacts:
                     print(f"object {temp_object_name} is not downloaded.")
 
             # total_files - files_downloaded gives us the number of files which are failed to download
-            if (total_files_in_directory - files_downloaded) == 0:   
+            if (total_files_in_directory - files_downloaded) == 0:
                 return total_files_in_directory, files_downloaded, True
-            else:         
-                return total_files_in_directory, files_downloaded, False  
+            else:
+                return total_files_in_directory, files_downloaded, False
         except Exception as e:
             sftp.close()
             ssh.close()
             print(f"object {object_name} is not downloaded.")
             # We usually don't count .dir as a file while counting total_files_in_directory.
-            # However, here we failed to download the .dir folder itself. 
+            # However, here we failed to download the .dir folder itself.
             # So we need to make, total_files_in_directory = 1
-            total_files_in_directory = 1 
+            total_files_in_directory = 1
             return total_files_in_directory, files_downloaded, False

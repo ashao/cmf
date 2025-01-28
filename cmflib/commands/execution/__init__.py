@@ -21,12 +21,15 @@ from cmflib.cli.utils import *
 
 SUB_COMMANDS = [list]
 
+
 # This parser adds positional argumets to the main parser
 def add_parser(subparsers, parent_parser):
-    LIST_HELP = "Display all executions with detailed information from the specified MLMD file."
+    LIST_HELP = (
+        "Display all executions with detailed information from the specified MLMD file."
+    )
 
     list_parser = subparsers.add_parser(
-        "execution", 
+        "execution",
         parents=[parent_parser],
         description="Display all executions with detailed information from the specified MLMD file.",
         help=LIST_HELP,
@@ -40,4 +43,3 @@ def add_parser(subparsers, parent_parser):
     fix_subparsers(list_subparsers)
     for cmd in SUB_COMMANDS:
         cmd.add_parser(list_subparsers, parent_parser)
-

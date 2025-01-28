@@ -21,12 +21,13 @@ from cmflib.cli.utils import *
 
 SUB_COMMANDS = [list]
 
+
 # This parser adds positional argumets to the main parser
 def add_parser(subparsers, parent_parser):
     LIST_HELP = "Display a list of pipeline name(s) from the available mlmd file."
 
     list_parser = subparsers.add_parser(
-        "pipeline", 
+        "pipeline",
         parents=[parent_parser],
         description="Display a list of pipeline name(s) from the available mlmd file.",
         help=LIST_HELP,
@@ -40,4 +41,3 @@ def add_parser(subparsers, parent_parser):
     fix_subparsers(list_subparsers)
     for cmd in SUB_COMMANDS:
         cmd.add_parser(list_subparsers, parent_parser)
-

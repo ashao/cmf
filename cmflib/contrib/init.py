@@ -22,8 +22,20 @@ import click
 
 @click.command()
 @click.argument("project_path", required=False, default=os.getcwd(), type=str)
-@click.option("--user_name", required=False, envvar="GIT_USER_NAME", default="First Second", type=str)
-@click.option("--user_email", required=False, envvar="GIT_USER_EMAIL", default="first.second@corp.org", type=str)
+@click.option(
+    "--user_name",
+    required=False,
+    envvar="GIT_USER_NAME",
+    default="First Second",
+    type=str,
+)
+@click.option(
+    "--user_email",
+    required=False,
+    envvar="GIT_USER_EMAIL",
+    default="first.second@corp.org",
+    type=str,
+)
 @click.option(
     "--git_remote",
     required=False,
@@ -38,7 +50,9 @@ import click
     type=str,
     default=f'/tmp/cmf/dvc_remotes/{str(uuid.uuid4()).replace("-", "")}',
 )
-def init_cmf_project(project_path: str, user_name: str, user_email: str, git_remote: str, dvc_remote: str):
+def init_cmf_project(
+    project_path: str, user_name: str, user_email: str, git_remote: str, dvc_remote: str
+):
     """Helper python script to init a new CMF project.
 
     Pre-requisites: `git` and `dvc` must be installed in a system.

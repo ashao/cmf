@@ -18,6 +18,7 @@ import os
 import subprocess
 from cmflib.dvc_wrapper import dvc_get_config
 
+
 # This class handles pulls dvc configuration
 class DvcConfig:
     @staticmethod
@@ -32,7 +33,7 @@ class DvcConfig:
             config_dict = {}
             for item in config_list:
                 # seprating every dvc property and its value using split on '='
-                item_list = item.split("=") 
+                item_list = item.split("=")
                 config_dict[item_list[0]] = item_list[1]
             return config_dict
 

@@ -17,10 +17,15 @@
 import requests
 import json
 
+
 # This function posts mlmd data to mlmd_push api on cmf-server
 def call_mlmd_push(json_payload, url, exec_id, pipeline_name):
     url_to_pass = f"{url}/mlmd_push"
-    json_data = {"id": exec_id, "json_payload": json_payload, "pipeline_name": pipeline_name}
+    json_data = {
+        "id": exec_id,
+        "json_payload": json_payload,
+        "pipeline_name": pipeline_name,
+    }
     response = requests.post(url_to_pass, json=json_data)  # Post request
     # print("Status code -", response.status_code)
     return response
@@ -36,7 +41,7 @@ def call_mlmd_pull(url, pipeline_name, exec_id):
 # This function posts tensorboard files to cmf-server
 def call_tensorboard(url, pipeline_name, file_name, file_path):
     url_to_pass = f"{url}/tensorboard"
-    files = {'file': (file_name, open(file_path, 'rb'))}
-    params = {'pipeline_name': pipeline_name}
+    files = {"file": (file_name, open(file_path, "rb"))}
+    params = {"pipeline_name": pipeline_name}
     response = requests.post(url_to_pass, files=files, params=params)
     return response

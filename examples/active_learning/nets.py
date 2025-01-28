@@ -6,6 +6,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+
 class Net:
     def __init__(self, net, params, device, path=None):
         self.net = net
@@ -15,15 +16,14 @@ class Net:
         if path:
             self.clf.load_state_dict(torch.load(path))
 
-        
     def train(self, data):
-        n_epoch = self.params['n_epoch']
-        #self.clf = self.net().to(self.device)
+        n_epoch = self.params["n_epoch"]
+        # self.clf = self.net().to(self.device)
         self.clf.train()
-        optimizer = optim.SGD(self.clf.parameters(), **self.params['optimizer_args'])
+        optimizer = optim.SGD(self.clf.parameters(), **self.params["optimizer_args"])
 
-        loader = DataLoader(data, shuffle=True, **self.params['train_args'])
-        for epoch in tqdm(range(1, n_epoch+1), ncols=100):
+        loader = DataLoader(data, shuffle=True, **self.params["train_args"])
+        for epoch in tqdm(range(1, n_epoch + 1), ncols=100):
             for batch_idx, (x, y, idxs) in enumerate(loader):
                 x, y = x.to(self.device), y.to(self.device)
                 optimizer.zero_grad()
@@ -36,7 +36,7 @@ class Net:
         self.clf.load_state_dict(torch.load(path))
         self.clf.eval()
         preds = torch.zeros(len(data), dtype=data.Y.dtype)
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         with torch.no_grad():
             for x, y, idxs in loader:
                 x, y = x.to(self.device), y.to(self.device)
@@ -44,29 +44,29 @@ class Net:
                 pred = out.max(1)[1]
                 preds[idxs] = pred.cpu()
         return preds
-    
+
     def predict_prob(self, data):
         self.clf.eval()
         probs = torch.zeros([len(data), len(np.unique(data.Y))])
-        
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         with torch.no_grad():
             for x, y, idxs in loader:
-                #print("inside for loop")
-                #print(idxs)
+                # print("inside for loop")
+                # print(idxs)
                 x, y = x.to(self.device), y.to(self.device)
                 out, e1 = self.clf(x)
                 prob = F.softmax(out, dim=1)
-                #print("Printing prob.cpu")
-                #print(prob.cpu)
+                # print("Printing prob.cpu")
+                # print(prob.cpu)
                 probs[idxs] = prob.cpu()
         return probs
-    
+
     def predict_prob_dropout(self, data, n_drop=10):
         self.clf.train()
 
         probs = torch.zeros([len(data), len(np.unique(data.Y))])
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         for i in range(n_drop):
             with torch.no_grad():
                 for x, y, idxs in loader:
@@ -76,11 +76,11 @@ class Net:
                     probs[idxs] += prob.cpu()
         probs /= n_drop
         return probs
-    
+
     def predict_prob_dropout_split(self, data, n_drop=10):
         self.clf.train()
         probs = torch.zeros([n_drop, len(data), len(np.unique(data.Y))])
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         for i in range(n_drop):
             with torch.no_grad():
                 for x, y, idxs in loader:
@@ -89,34 +89,33 @@ class Net:
                     prob = F.softmax(out, dim=1)
                     probs[i][idxs] += F.softmax(out, dim=1).cpu()
         return probs
-    
+
     def get_embeddings(self, data):
         self.clf.eval()
         embeddings = torch.zeros([len(data), self.clf.get_embedding_dim()])
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         with torch.no_grad():
             for x, y, idxs in loader:
                 x, y = x.to(self.device), y.to(self.device)
                 out, e1 = self.clf(x)
                 embeddings[idxs] = e1.cpu()
         return embeddings
-    
+
     def get_embeddings_from_saved_model(self, data, path):
         self.clf.load_state_dict(torch.load(path))
         self.clf.eval()
         embeddings = torch.zeros([len(data), self.clf.get_embedding_dim()])
-        loader = DataLoader(data, shuffle=False, **self.params['test_args'])
+        loader = DataLoader(data, shuffle=False, **self.params["test_args"])
         with torch.no_grad():
             for x, y, idxs in loader:
                 x, y = x.to(self.device), y.to(self.device)
                 out, e1 = self.clf(x)
                 embeddings[idxs] = e1.cpu()
         return embeddings
-    
 
     def save_model(self, path):
         self.clf.save_model(path)
-        
+
 
 class MNIST_Net(nn.Module):
     def __init__(self):
@@ -142,6 +141,7 @@ class MNIST_Net(nn.Module):
     def save_model(self, path):
         torch.save(self.state_dict(), path)
 
+
 class SVHN_Net(nn.Module):
     def __init__(self):
         super(SVHN_Net, self).__init__()
@@ -166,6 +166,7 @@ class SVHN_Net(nn.Module):
 
     def get_embedding_dim(self):
         return 50
+
 
 class CIFAR10_Net(nn.Module):
     def __init__(self):

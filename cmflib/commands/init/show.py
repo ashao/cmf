@@ -24,9 +24,10 @@ from cmflib.dvc_wrapper import dvc_get_config
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.cmf_exception_handling import CmfNotConfigured, CmfInitShow
 
+
 class CmdInitShow(CmdBase):
     def run(self):
-        cmfconfig = os.environ.get("CONFIG_FILE",".cmfconfig")
+        cmfconfig = os.environ.get("CONFIG_FILE", ".cmfconfig")
         msg = "'cmf' is not configured.\nExecute 'cmf init' command."
         result = dvc_get_config()
         if len(result) == 0:
@@ -42,7 +43,7 @@ class CmdInitShow(CmdBase):
                 temp_str = f"{key} = {value}"
                 attr_list.append(temp_str)
             attr_str = "\n".join(attr_list)
-            return CmfInitShow(result,attr_str)
+            return CmfInitShow(result, attr_str)
 
 
 def add_parser(subparsers, parent_parser):

@@ -19,16 +19,19 @@ import sys
 import subprocess
 import json
 
-def is_url(url)-> bool:
+
+def is_url(url) -> bool:
     from urllib.parse import urlparse
+
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
     except ValueError:
         return False
 
+
 def is_git_repo():
-    git_dir = os.path.join(os.getcwd(), '.git')
+    git_dir = os.path.join(os.getcwd(), ".git")
     print("git_dir", git_dir)
     result = os.path.exists(git_dir) and os.path.isdir(git_dir)
     if result:
@@ -37,17 +40,18 @@ def is_git_repo():
         return
 
 
-def get_python_env()-> str:
+def get_python_env() -> str:
     installed_packages = ""
     python_version = sys.version
     packages = ""
     # check if conda is installed
     if is_conda_installed():
         import conda
+
         # List all installed packages and their versions
         data = list_conda_packages_json()
         transformed_result = [f"{entry['name']}=={entry['version']}" for entry in data]
-        installed_packages =  transformed_result
+        installed_packages = transformed_result
         packages = f"Conda: Python {python_version}: {installed_packages}"
     else:
         # pip
@@ -62,17 +66,25 @@ def get_python_env()-> str:
             print("Pip is not installed.")
     return packages
 
+
 def change_dir(cmf_init_path):
     logging_dir = os.getcwd()
     if not logging_dir == cmf_init_path:
         os.chdir(cmf_init_path)
     return logging_dir
 
+
 def is_conda_installed():
     try:
         import conda
+
         # Run the 'conda --version' command and capture the output
-        subprocess.run(['conda', '--version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(
+            ["conda", "--version"],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
         return True
     except subprocess.CalledProcessError:
         return False
@@ -82,23 +94,29 @@ def is_conda_installed():
 
 def list_conda_packages_json():
     try:
-        result = subprocess.run(['conda', 'list', '--json'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(
+            ["conda", "list", "--json"],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
         return json.loads(result.stdout)
     except subprocess.CalledProcessError as e:
         return f"Error: {e.stderr}"
 
 
-# Generate SciToken dynamically 
+# Generate SciToken dynamically
 def generate_osdf_token(key_id, key_path, key_issuer) -> str:
 
-    #for SciToken Generation & Validation
+    # for SciToken Generation & Validation
     import scitokens
     from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.backends import default_backend
 
-    dynamic_pass="" #Initialize Blank dynamic Password
+    dynamic_pass = ""  # Initialize Blank dynamic Password
 
-    #Read Private Key using load_pem_private_key() method 
+    # Read Private Key using load_pem_private_key() method
     if not os.path.exists(key_path):
         print(f"File {key_path} does not exist.")
         return dynamic_pass
@@ -109,22 +127,26 @@ def generate_osdf_token(key_id, key_path, key_issuer) -> str:
 
         loaded_private_key = serialization.load_pem_private_key(
             private_key_contents.encode(),
-            password=None, # Assumes Private key. Update this if password is used for Private Key
-            backend=default_backend()
+            password=None,  # Assumes Private key. Update this if password is used for Private Key
+            backend=default_backend(),
         )
 
         if is_url(key_issuer):
-            token = scitokens.SciToken(key=loaded_private_key, key_id=key_id) #Generate SciToken
-            #token.update_claims({"iss": key_issuer, "scope": "write:/ read:/", "aud": "NRP", "sub": "NRP"})
-            token.update_claims({"scope": "write:/ read:/", "aud": "NRP", "sub": "NRP"}) #TODO: Figure out how to supply these as input params
+            token = scitokens.SciToken(
+                key=loaded_private_key, key_id=key_id
+            )  # Generate SciToken
+            # token.update_claims({"iss": key_issuer, "scope": "write:/ read:/", "aud": "NRP", "sub": "NRP"})
+            token.update_claims(
+                {"scope": "write:/ read:/", "aud": "NRP", "sub": "NRP"}
+            )  # TODO: Figure out how to supply these as input params
 
             # Serialize the token to a string
-            token_ser = token.serialize(issuer=key_issuer) 
-            #Key_issuer is something like ""https://t.nationalresearchplatform.org/fdp"
+            token_ser = token.serialize(issuer=key_issuer)
+            # Key_issuer is something like ""https://t.nationalresearchplatform.org/fdp"
 
-            #Stringify token_str
-            token_str=token_ser.decode()
-            dynamic_pass="Bearer "+ token_str
+            # Stringify token_str
+            token_str = token_ser.decode()
+            dynamic_pass = "Bearer " + token_str
         else:
             print(f"{key_issuer} is not a valid URL.")
 

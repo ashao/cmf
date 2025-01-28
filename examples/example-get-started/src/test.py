@@ -22,11 +22,11 @@ import click
 import sklearn.metrics as metrics
 from cmflib import cmf
 
-__all__ = ['test']
+__all__ = ["test"]
 
 
 def test(model_dir: str, dataset_dir: str, output_dir: str) -> None:
-    """ Test machine learning model.
+    """Test machine learning model.
     Args:
         model_dir: Path to a directory containing model.pkl file.
         dataset_dir: Path to a directory containing test.tsv file.
@@ -38,13 +38,15 @@ def test(model_dir: str, dataset_dir: str, output_dir: str) -> None:
         Output: ExecutionMetrics
     """
     os.makedirs(output_dir, exist_ok=True)
-    Artifacts = collections.namedtuple('Artifacts', ['model', 'dataset', 'scores', 'prc', 'roc'])
+    Artifacts = collections.namedtuple(
+        "Artifacts", ["model", "dataset", "scores", "prc", "roc"]
+    )
     artifacts = Artifacts(
-        model=os.path.join(model_dir, 'model.pkl'),
+        model=os.path.join(model_dir, "model.pkl"),
         dataset=os.path.join(dataset_dir, "test.pkl"),
-        scores=os.path.join(output_dir, 'scores.json'),
-        prc=os.path.join(output_dir, 'prc.json'),
-        roc=os.path.join(output_dir, 'roc.json')
+        scores=os.path.join(output_dir, "scores.json"),
+        prc=os.path.join(output_dir, "prc.json"),
+        roc=os.path.join(output_dir, "roc.json"),
     )
     graph_env = os.getenv("NEO4J", "False")
     graph = True if graph_env == "True" or graph_env == "TRUE" else False
@@ -54,8 +56,11 @@ def test(model_dir: str, dataset_dir: str, output_dir: str) -> None:
 
     # TODO: Sergey - how do I know these custom properties here?
     metawriter.log_model(
-        path=artifacts.model, event="input", model_framework="sklearn", model_type="RandomForest",
-        model_name="RandomForest_default"
+        path=artifacts.model,
+        event="input",
+        model_framework="sklearn",
+        model_type="RandomForest",
+        model_name="RandomForest_default",
     )
     _ = metawriter.log_dataset(artifacts.dataset, "input")
 
@@ -70,7 +75,9 @@ def test(model_dir: str, dataset_dir: str, output_dir: str) -> None:
     predictions_by_class = model.predict_proba(x)
     predictions = predictions_by_class[:, 1]
 
-    precision, recall, prc_thresholds = metrics.precision_recall_curve(labels, predictions)
+    precision, recall, prc_thresholds = metrics.precision_recall_curve(
+        labels, predictions
+    )
     fpr, tpr, roc_thresholds = metrics.roc_curve(labels, predictions)
 
     avg_prec = metrics.average_precision_score(labels, predictions)
@@ -112,12 +119,12 @@ def test(model_dir: str, dataset_dir: str, output_dir: str) -> None:
 
 
 @click.command()
-@click.argument('model_dir', required=True, type=str)
-@click.argument('dataset_dir', required=True, type=str)
-@click.argument('output_dir', required=True, type=str)
+@click.argument("model_dir", required=True, type=str)
+@click.argument("dataset_dir", required=True, type=str)
+@click.argument("output_dir", required=True, type=str)
 def test_cli(model_dir: str, dataset_dir: str, output_dir: str) -> None:
     test(model_dir, dataset_dir, output_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_cli()

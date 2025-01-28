@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+
 class Strategy:
     def __init__(self, dataset, net):
         self.dataset = dataset
@@ -36,11 +37,10 @@ class Strategy:
     def predict_prob_dropout_split(self, data, n_drop=10):
         probs = self.net.predict_prob_dropout_split(data, n_drop=n_drop)
         return probs
-    
+
     def get_embeddings(self, data):
         embeddings = self.net.get_embeddings(data)
         return embeddings
 
     def save_model(self, path):
         self.net.save_model(path)
-

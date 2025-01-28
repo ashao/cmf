@@ -31,7 +31,12 @@ from cmflib.dvc_wrapper import (
 )
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
-from cmflib.cmf_exception_handling import Neo4jArgumentNotProvided, CmfInitComplete, CmfInitFailed
+from cmflib.cmf_exception_handling import (
+    Neo4jArgumentNotProvided,
+    CmfInitComplete,
+    CmfInitFailed,
+)
+
 
 class CmdInitSSHRemote(CmdBase):
     def run(self):
@@ -87,7 +92,6 @@ class CmdInitSSHRemote(CmdBase):
         dvc_add_attribute(repo_type, "port", self.args.port)
         status = CmfInitComplete()
         return status
-
 
 
 def add_parser(subparsers, parent_parser):

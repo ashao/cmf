@@ -21,11 +21,20 @@ from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 
 from cmflib.cmf import Cmf
-from cmflib.contrib.auto_logging_v01 import Context, Dataset, ExecutionMetrics, MLModel, cli_run, step
+from cmflib.contrib.auto_logging_v01 import (
+    Context,
+    Dataset,
+    ExecutionMetrics,
+    MLModel,
+    cli_run,
+    step,
+)
 
 
 @step()
-def test(ctx: Context, test_dataset: Dataset, model: MLModel) -> t.Dict[str, ExecutionMetrics]:
+def test(
+    ctx: Context, test_dataset: Dataset, model: MLModel
+) -> t.Dict[str, ExecutionMetrics]:
     """Test a decision tree classifier on a test dataset.
 
     This example demonstrates the automated logging of output execution metrics. In your python code:
@@ -58,13 +67,17 @@ def test(ctx: Context, test_dataset: Dataset, model: MLModel) -> t.Dict[str, Exe
     with open(model.uri, "rb") as stream:
         clf: DecisionTreeClassifier = pickle.load(stream)
 
-    test_accuracy = accuracy_score(y_true=dataset["y"], y_pred=clf.predict(dataset["x"]))
+    test_accuracy = accuracy_score(
+        y_true=dataset["y"], y_pred=clf.predict(dataset["x"])
+    )
 
     # TODO: Fix URI for execution metrics. What should it be?
     cmf: Cmf = ctx["cmf"]
     return {
         "exec_metrics": ExecutionMetrics(
-            uri=str(cmf.execution.id) + "/metrics/test", name="test", params={"accuracy": test_accuracy}
+            uri=str(cmf.execution.id) + "/metrics/test",
+            name="test",
+            params={"accuracy": test_accuracy},
         )
     }
 

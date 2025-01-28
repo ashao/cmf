@@ -18,8 +18,12 @@ for exe in exes:
         execution = exes[0]
 metawriter.execution = execution
 
-_ = metawriter.log_dataset("artifacts/data.xml.gz", "input", custom_properties={"user-metadata1": "metadata_value"})
-_ = metawriter.log_execution_metrics("metrics-1", {"auc":0.3})
+_ = metawriter.log_dataset(
+    "artifacts/data.xml.gz",
+    "input",
+    custom_properties={"user-metadata1": "metadata_value"},
+)
+_ = metawriter.log_execution_metrics("metrics-1", {"auc": 0.3})
 
 metawriter.finalize()
 print("Test executed successfully")

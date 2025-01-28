@@ -23,7 +23,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from cmflib import cmf
 
-__all__ = ['train']
+__all__ = ["train"]
 
 
 def train(input_dir: str, output_dir: str) -> None:
@@ -41,7 +41,9 @@ def train(input_dir: str, output_dir: str) -> None:
     graph = True if graph_env == "True" or graph_env == "TRUE" else False
     metawriter = cmf.Cmf(filepath="mlmd", pipeline_name="Test-env", graph=graph)
     _ = metawriter.create_context(pipeline_stage="Train")
-    _ = metawriter.create_execution(execution_type="Train-execution", custom_properties=params)
+    _ = metawriter.create_execution(
+        execution_type="Train-execution", custom_properties=params
+    )
 
     train_ds = os.path.join(input_dir, "train.pkl")
     _ = metawriter.log_dataset(train_ds, "input")
@@ -56,12 +58,15 @@ def train(input_dir: str, output_dir: str) -> None:
     sys.stderr.write("Y matrix size {}\n".format(labels.shape))
 
     clf = RandomForestClassifier(
-        n_estimators=params["n_est"], min_samples_split=params["min_split"], n_jobs=2, random_state=params["seed"]
+        n_estimators=params["n_est"],
+        min_samples_split=params["min_split"],
+        n_jobs=2,
+        random_state=params["seed"],
     )
     clf.fit(x, labels)
 
     os.makedirs(output_dir, exist_ok=True)
-    model_file = os.path.join(output_dir, 'model.pkl')
+    model_file = os.path.join(output_dir, "model.pkl")
     with open(model_file, "wb") as fd:
         pickle.dump(clf, fd)
 
@@ -69,17 +74,20 @@ def train(input_dir: str, output_dir: str) -> None:
     _ = metawriter.commit_metrics("training_metrics")
 
     _ = metawriter.log_model(
-        path=model_file, event="output", model_framework="SKlearn", model_type="RandomForestClassifier",
-        model_name="RandomForestClassifier:default"
+        path=model_file,
+        event="output",
+        model_framework="SKlearn",
+        model_type="RandomForestClassifier",
+        model_name="RandomForestClassifier:default",
     )
 
 
 @click.command()
-@click.argument('input_dir', required=True, type=str)
-@click.argument('output_dir', required=True, type=str)
+@click.argument("input_dir", required=True, type=str)
+@click.argument("output_dir", required=True, type=str)
 def train_cli(input_dir: str, output_dir: str) -> None:
     train(input_dir, output_dir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     train_cli()

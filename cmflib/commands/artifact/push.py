@@ -28,7 +28,17 @@ from cmflib.dvc_wrapper import dvc_push
 from cmflib.dvc_wrapper import dvc_add_attribute
 from cmflib.cli.utils import find_root
 from cmflib.utils.cmf_config import CmfConfig
-from cmflib.cmf_exception_handling import PipelineNotFound, Minios3ServerInactive, FileNotFound, ExecutionsNotFound, CmfNotConfigured, ArtifactPushSuccess, MissingArgument, DuplicateArgumentNotAllowed
+from cmflib.cmf_exception_handling import (
+    PipelineNotFound,
+    Minios3ServerInactive,
+    FileNotFound,
+    ExecutionsNotFound,
+    CmfNotConfigured,
+    ArtifactPushSuccess,
+    MissingArgument,
+    DuplicateArgumentNotAllowed,
+)
+
 
 class CmdArtifactPush(CmdBase):
     def run(self):
@@ -42,22 +52,27 @@ class CmdArtifactPush(CmdBase):
         # in case, there is no .cmfconfig file
         if output.find("'cmf' is not configured.") != -1:
             raise CmfNotConfigured(output)
-        
 
         out_msg = check_minio_server(dvc_config_op)
         if dvc_config_op["core.remote"] == "minio" and out_msg != "SUCCESS":
             raise Minios3ServerInactive()
         if dvc_config_op["core.remote"] == "osdf":
             config_file_path = os.path.join(output, cmf_config_file)
-            cmf_config={}
-            cmf_config=CmfConfig.read_config(config_file_path)
-            #print("key_id="+cmf_config["osdf-key_id"])
-            dynamic_password = generate_osdf_token(cmf_config["osdf-key_id"],cmf_config["osdf-key_path"],cmf_config["osdf-key_issuer"])
-            #print("Dynamic Password"+dynamic_password)
-            dvc_add_attribute(dvc_config_op["core.remote"],"password",dynamic_password)
-            #The Push URL will be something like: https://<Path>/files/md5/[First Two of MD5 Hash]
+            cmf_config = {}
+            cmf_config = CmfConfig.read_config(config_file_path)
+            # print("key_id="+cmf_config["osdf-key_id"])
+            dynamic_password = generate_osdf_token(
+                cmf_config["osdf-key_id"],
+                cmf_config["osdf-key_path"],
+                cmf_config["osdf-key_issuer"],
+            )
+            # print("Dynamic Password"+dynamic_password)
+            dvc_add_attribute(
+                dvc_config_op["core.remote"], "password", dynamic_password
+            )
+            # The Push URL will be something like: https://<Path>/files/md5/[First Two of MD5 Hash]
             result = dvc_push()
-            #print(result)
+            # print(result)
             return result
 
         # Default path of mlmd file
@@ -72,8 +87,8 @@ class CmdArtifactPush(CmdBase):
             raise FileNotFound(mlmd_file_name, current_directory)
         # creating cmfquery object
         query = cmfquery.CmfQuery(mlmd_file_name)
-        
-         # Put a check to see whether pipline exists or not
+
+        # Put a check to see whether pipline exists or not
         pipeline_name = self.args.pipeline_name
         if not query.get_pipeline_id(pipeline_name) > 0:
             raise PipelineNotFound(pipeline_name)
@@ -99,14 +114,16 @@ class CmdArtifactPush(CmdBase):
             raise ExecutionsNotFound()
         for identifier in identifiers:
             artifacts = query.get_all_artifacts_for_execution(
-                 identifier
+                identifier
             )  # getting all artifacts with id
             # dropping artifact with type 'metrics' as metrics doesn't have physical file
             if not artifacts.empty:
-                artifacts = artifacts[artifacts['type'] != 'Metrics']
+                artifacts = artifacts[artifacts["type"] != "Metrics"]
                 # adding .dvc at the end of every file as it is needed for pull
-                artifacts['name'] = artifacts['name'].apply(lambda name: f"{name.split(':')[0]}.dvc")
-                names.extend(artifacts['name'].tolist())
+                artifacts["name"] = artifacts["name"].apply(
+                    lambda name: f"{name.split(':')[0]}.dvc"
+                )
+                names.extend(artifacts["name"].tolist())
         final_list = []
         for file in set(names):
             # checking if the .dvc exists
@@ -114,17 +131,18 @@ class CmdArtifactPush(CmdBase):
                 final_list.append(file)
             # checking if the .dvc exists in user's project working directory
             elif os.path.isabs(file):
-                    file = re.split("/",file)[-1]
-                    file = os.path.join(os.getcwd(), file)
-                    if os.path.exists(file):
-                        final_list.append(file)
+                file = re.split("/", file)[-1]
+                file = os.path.join(os.getcwd(), file)
+                if os.path.exists(file):
+                    final_list.append(file)
             else:
                 # not adding the .dvc to the final list in case .dvc doesn't exists in both the places
                 pass
-        #print("file_set = ", final_list)
+        # print("file_set = ", final_list)
         result = dvc_push(list(final_list))
         return ArtifactPushSuccess(result)
-      
+
+
 def add_parser(subparsers, parent_parser):
     HELP = "Push artifacts to the user configured artifact repo."
 

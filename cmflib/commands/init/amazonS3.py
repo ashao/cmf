@@ -30,7 +30,12 @@ from cmflib.dvc_wrapper import (
 )
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import is_git_repo
-from cmflib.cmf_exception_handling import Neo4jArgumentNotProvided, CmfInitComplete, CmfInitFailed
+from cmflib.cmf_exception_handling import (
+    Neo4jArgumentNotProvided,
+    CmfInitComplete,
+    CmfInitFailed,
+)
+
 
 class CmdInitAmazonS3(CmdBase):
     def run(self):

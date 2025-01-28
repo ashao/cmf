@@ -14,5 +14,16 @@
 # limitations under the License.
 ###
 
-CONTEXT_LIST = ["create_time_since_epoch", "custom_properties", "id", \
-                 "last_update_time_since_epoch", "name", "properties", "type", "type_id", "uri", "name", "Execution_uuid"]
+CONTEXT_LIST = [
+    "create_time_since_epoch",
+    "custom_properties",
+    "id",
+    "last_update_time_since_epoch",
+    "name",
+    "properties",
+    "type",
+    "type_id",
+    "uri",
+    "name",
+    "Execution_uuid",
+]
