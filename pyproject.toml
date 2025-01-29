@@ -36,6 +36,15 @@ dev = [
 	"black==24.10.0",
 	"isort==6.0.0",
 ]
+static-checking = [
+	"mypy==1.14.1",
+	"types-paramiko",
+	"types-requests",
+	"types-protobuf",
+	"types-tabulate",
+	"types-pyyaml",
+	"pandas-stubs",
+]
 
 [tool.black]
 target-version = ['py310', 'py311']
