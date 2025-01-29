@@ -21,19 +21,28 @@ import os
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import check_minio_server
-from cmflib.cmf_exception_handling import (ArtifactNotFound,
-                                           BatchDownloadFailure,
-                                           BatchDownloadSuccess,
-                                           CmfNotConfigured,
-                                           DuplicateArgumentNotAllowed,
-                                           ExecutionsNotFound, FileNotFound,
-                                           MissingArgument, MsgFailure,
-                                           MsgSuccess, ObjectDownloadFailure,
-                                           ObjectDownloadSuccess,
-                                           PipelineNotFound)
-from cmflib.storage_backends import (amazonS3_artifacts, local_artifacts,
-                                     minio_artifacts, osdf_artifacts,
-                                     sshremote_artifacts)
+from cmflib.cmf_exception_handling import (
+    ArtifactNotFound,
+    BatchDownloadFailure,
+    BatchDownloadSuccess,
+    CmfNotConfigured,
+    DuplicateArgumentNotAllowed,
+    ExecutionsNotFound,
+    FileNotFound,
+    MissingArgument,
+    MsgFailure,
+    MsgSuccess,
+    ObjectDownloadFailure,
+    ObjectDownloadSuccess,
+    PipelineNotFound,
+)
+from cmflib.storage_backends import (
+    amazonS3_artifacts,
+    local_artifacts,
+    minio_artifacts,
+    osdf_artifacts,
+    sshremote_artifacts,
+)
 from cmflib.utils.dvc_config import DvcConfig
 
 
@@ -593,8 +602,7 @@ class CmdArtifactPull(CmdBase):
             # Regenerate Token for OSDF
             from cmflib.dvc_wrapper import dvc_add_attribute
             from cmflib.utils.cmf_config import CmfConfig
-            from cmflib.utils.helper_functions import (generate_osdf_token,
-                                                       is_url)
+            from cmflib.utils.helper_functions import generate_osdf_token, is_url
 
             # Fetch Config from CMF_Config_File
             cmf_config_file = os.environ.get("CONFIG_FILE", ".cmfconfig")

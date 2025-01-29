@@ -20,8 +20,13 @@ import typing as t
 from sklearn.datasets import load_iris
 from sklearn.utils import Bunch
 
-from cmflib.contrib.auto_logging_v01 import (Context, Dataset, cli_run,
-                                             prepare_workspace, step)
+from cmflib.contrib.auto_logging_v01 import (
+    Context,
+    Dataset,
+    cli_run,
+    prepare_workspace,
+    step,
+)
 
 
 @step()

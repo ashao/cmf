@@ -22,6 +22,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 #!pip install torch
 #!pip install torchsummary
 import torch
@@ -43,13 +44,16 @@ import time
 
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
+
 # import troch related libraries
 import torchvision
 from aif360.algorithms.preprocessing.reweighing import Reweighing
+
 #!pip install aif360
 from aif360.datasets import BinaryLabelDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric
 from IPython import get_ipython
+
 # import numba lib for GPU operation
 from numba import cuda
 from torch.optim import lr_scheduler

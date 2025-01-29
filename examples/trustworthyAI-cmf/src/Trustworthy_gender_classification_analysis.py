@@ -23,6 +23,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
 # get_ipython().system('pip install torch')
 # get_ipython().system('pip install torchsummary')
 import torch
@@ -39,9 +40,9 @@ from torchsummary import summary
 sys.path.append("../")
 
 import tensorflow as tf
-from aif360.algorithms.inprocessing.adversarial_debiasing import \
-    AdversarialDebiasing
+from aif360.algorithms.inprocessing.adversarial_debiasing import AdversarialDebiasing
 from aif360.algorithms.preprocessing.reweighing import Reweighing
+
 # get_ipython().system('pip install aif360')
 from aif360.datasets import BinaryLabelDataset
 from aif360.metrics import BinaryLabelDatasetMetric, ClassificationMetric

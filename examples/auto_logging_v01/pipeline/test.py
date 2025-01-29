@@ -21,9 +21,14 @@ from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 
 from cmflib.cmf import Cmf
-from cmflib.contrib.auto_logging_v01 import (Context, Dataset,
-                                             ExecutionMetrics, MLModel,
-                                             cli_run, step)
+from cmflib.contrib.auto_logging_v01 import (
+    Context,
+    Dataset,
+    ExecutionMetrics,
+    MLModel,
+    cli_run,
+    step,
+)
 
 
 @step()

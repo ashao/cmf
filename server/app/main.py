@@ -16,21 +16,25 @@ from fastapi.staticfiles import StaticFiles
 
 from cmflib import cmfquery
 from cmflib.cmf_exception_handling import MlmdNotFoundOnServer
-from server.app.get_data import (async_api, create_unique_executions,
-                                 get_all_artifact_ids, get_all_exe_ids,
-                                 get_artifact_types, get_artifacts,
-                                 get_executions, get_lineage_data,
-                                 get_mlmd_from_server, get_model_data)
-from server.app.query_artifact_lineage_d3force import \
-    query_artifact_lineage_d3force
-from server.app.query_artifact_lineage_d3tree import \
-    query_artifact_lineage_d3tree
-from server.app.query_execution_lineage_d3force import \
-    query_execution_lineage_d3force
-from server.app.query_execution_lineage_d3tree import \
-    query_execution_lineage_d3tree
-from server.app.query_visualization_artifact_execution import \
-    query_visualization_artifact_execution
+from server.app.get_data import (
+    async_api,
+    create_unique_executions,
+    get_all_artifact_ids,
+    get_all_exe_ids,
+    get_artifact_types,
+    get_artifacts,
+    get_executions,
+    get_lineage_data,
+    get_mlmd_from_server,
+    get_model_data,
+)
+from server.app.query_artifact_lineage_d3force import query_artifact_lineage_d3force
+from server.app.query_artifact_lineage_d3tree import query_artifact_lineage_d3tree
+from server.app.query_execution_lineage_d3force import query_execution_lineage_d3force
+from server.app.query_execution_lineage_d3tree import query_execution_lineage_d3tree
+from server.app.query_visualization_artifact_execution import (
+    query_visualization_artifact_execution,
+)
 
 server_store_path = "/cmf-server/data/mlmd"
 

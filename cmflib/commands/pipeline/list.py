@@ -19,9 +19,12 @@ import os
 
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
-from cmflib.cmf_exception_handling import (DuplicateArgumentNotAllowed,
-                                           FileNotFound, MissingArgument,
-                                           MsgSuccess)
+from cmflib.cmf_exception_handling import (
+    DuplicateArgumentNotAllowed,
+    FileNotFound,
+    MissingArgument,
+    MsgSuccess,
+)
 
 
 class CmdPipelineList(CmdBase):

@@ -25,31 +25,54 @@ import uuid
 
 import pandas as pd
 from ml_metadata.metadata_store import metadata_store
+
 # This import is needed for jupyterlab environment
 from ml_metadata.proto import metadata_store_pb2 as mlpb
 
 from cmflib import graph_wrapper
-from cmflib.cmf_commands_wrapper import (_artifact_list, _artifact_pull,
-                                         _artifact_pull_single, _artifact_push,
-                                         _cmf_cmd_init, _execution_list,
-                                         _init_amazonS3, _init_local,
-                                         _init_minioS3, _init_osdfremote,
-                                         _init_sshremote, _metadata_export,
-                                         _metadata_pull, _metadata_push,
-                                         _pipeline_list)
-from cmflib.dvc_wrapper import (check_default_remote, check_git_remote,
-                                check_git_repo, commit_dvc_lock_file,
-                                commit_output, dvc_get_hash, dvc_get_url,
-                                git_checkout_new_branch, git_commit,
-                                git_get_commit, git_get_repo)
+from cmflib.cmf_commands_wrapper import (
+    _artifact_list,
+    _artifact_pull,
+    _artifact_pull_single,
+    _artifact_push,
+    _cmf_cmd_init,
+    _execution_list,
+    _init_amazonS3,
+    _init_local,
+    _init_minioS3,
+    _init_osdfremote,
+    _init_sshremote,
+    _metadata_export,
+    _metadata_pull,
+    _metadata_push,
+    _pipeline_list,
+)
+from cmflib.dvc_wrapper import (
+    check_default_remote,
+    check_git_remote,
+    check_git_repo,
+    commit_dvc_lock_file,
+    commit_output,
+    dvc_get_hash,
+    dvc_get_url,
+    git_checkout_new_branch,
+    git_commit,
+    git_get_commit,
+    git_get_repo,
+)
 from cmflib.metadata_helper import (
     associate_child_to_parent_context,
     create_new_artifact_event_and_attribution,
-    create_new_execution_in_existing_run_context, get_artifacts_by_id,
-    get_or_create_context_with_type, get_or_create_parent_context,
-    get_or_create_run_context, link_execution_to_artifact,
-    link_execution_to_input_artifact, put_artifact,
-    update_context_custom_properties)
+    create_new_execution_in_existing_run_context,
+    get_artifacts_by_id,
+    get_or_create_context_with_type,
+    get_or_create_parent_context,
+    get_or_create_run_context,
+    link_execution_to_artifact,
+    link_execution_to_input_artifact,
+    put_artifact,
+    update_context_custom_properties,
+)
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import change_dir, get_python_env
 

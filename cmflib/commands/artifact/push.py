@@ -22,12 +22,16 @@ import re
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import check_minio_server, find_root
-from cmflib.cmf_exception_handling import (ArtifactPushSuccess,
-                                           CmfNotConfigured,
-                                           DuplicateArgumentNotAllowed,
-                                           ExecutionsNotFound, FileNotFound,
-                                           Minios3ServerInactive,
-                                           MissingArgument, PipelineNotFound)
+from cmflib.cmf_exception_handling import (
+    ArtifactPushSuccess,
+    CmfNotConfigured,
+    DuplicateArgumentNotAllowed,
+    ExecutionsNotFound,
+    FileNotFound,
+    Minios3ServerInactive,
+    MissingArgument,
+    PipelineNotFound,
+)
 from cmflib.dvc_wrapper import dvc_add_attribute, dvc_push
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.dvc_config import DvcConfig

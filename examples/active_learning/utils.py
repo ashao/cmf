@@ -1,11 +1,20 @@
 from data import get_CIFAR10, get_FashionMNIST, get_MNIST, get_SVHN
 from handlers import CIFAR10_Handler, MNIST_Handler, SVHN_Handler
 from nets import CIFAR10_Net, MNIST_Net, Net, SVHN_Net
-from query_strategies import (AdversarialBIM, AdversarialDeepFool, BALDDropout,
-                              EntropySampling, EntropySamplingDropout,
-                              KCenterGreedy, KMeansSampling, LeastConfidence,
-                              LeastConfidenceDropout, MarginSampling,
-                              MarginSamplingDropout, RandomSampling)
+from query_strategies import (
+    AdversarialBIM,
+    AdversarialDeepFool,
+    BALDDropout,
+    EntropySampling,
+    EntropySamplingDropout,
+    KCenterGreedy,
+    KMeansSampling,
+    LeastConfidence,
+    LeastConfidenceDropout,
+    MarginSampling,
+    MarginSamplingDropout,
+    RandomSampling,
+)
 from torchvision import transforms
 
 params = {

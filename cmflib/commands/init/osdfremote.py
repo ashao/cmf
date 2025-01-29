@@ -20,12 +20,20 @@ import argparse
 import os
 
 from cmflib.cli.command import CmdBase
-from cmflib.cmf_exception_handling import (CmfInitComplete, CmfInitFailed,
-                                           Neo4jArgumentNotProvided)
-from cmflib.dvc_wrapper import (dvc_add_attribute, dvc_add_remote_repo,
-                                dvc_quiet_init, git_add_remote,
-                                git_checkout_new_branch, git_initial_commit,
-                                git_quiet_init)
+from cmflib.cmf_exception_handling import (
+    CmfInitComplete,
+    CmfInitFailed,
+    Neo4jArgumentNotProvided,
+)
+from cmflib.dvc_wrapper import (
+    dvc_add_attribute,
+    dvc_add_remote_repo,
+    dvc_quiet_init,
+    git_add_remote,
+    git_checkout_new_branch,
+    git_initial_commit,
+    git_quiet_init,
+)
 from cmflib.utils.cmf_config import CmfConfig
 from cmflib.utils.helper_functions import generate_osdf_token, is_git_repo
 

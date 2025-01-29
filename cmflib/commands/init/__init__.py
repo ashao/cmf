@@ -17,8 +17,7 @@
 import argparse
 
 from cmflib.cli.utils import *
-from cmflib.commands.init import (amazonS3, local, minioS3, osdfremote, show,
-                                  sshremote)
+from cmflib.commands.init import amazonS3, local, minioS3, osdfremote, show, sshremote
 
 SUB_COMMANDS = [minioS3, amazonS3, local, sshremote, osdfremote, show]
 

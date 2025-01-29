@@ -6,8 +6,7 @@ import pandas as pd
 from fastapi.concurrency import run_in_threadpool
 
 from cmflib import cmf_merger, cmfquery
-from server.app.query_artifact_lineage_d3force import \
-    query_artifact_lineage_d3force
+from server.app.query_artifact_lineage_d3force import query_artifact_lineage_d3force
 from server.app.query_list_of_executions import query_list_of_executions
 
 

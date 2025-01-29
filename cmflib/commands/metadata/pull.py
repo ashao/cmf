@@ -21,16 +21,18 @@ import os
 from cmflib import cmf_merger
 from cmflib.cli.command import CmdBase
 from cmflib.cli.utils import find_root
-from cmflib.cmf_exception_handling import (CmfNotConfigured,
-                                           CmfServerNotAvailable,
-                                           DirectoryNotfound,
-                                           ExecutionIDNotFound,
-                                           FileNameNotfound,
-                                           InternalServerError,
-                                           MlmdFilePullFailure,
-                                           MlmdFilePullSuccess,
-                                           MlmdNotFoundOnServer,
-                                           PipelineNotFound)
+from cmflib.cmf_exception_handling import (
+    CmfNotConfigured,
+    CmfServerNotAvailable,
+    DirectoryNotfound,
+    ExecutionIDNotFound,
+    FileNameNotfound,
+    InternalServerError,
+    MlmdFilePullFailure,
+    MlmdFilePullSuccess,
+    MlmdNotFoundOnServer,
+    PipelineNotFound,
+)
 from cmflib.server_interface import server_interface
 from cmflib.utils.cmf_config import CmfConfig
 

@@ -24,10 +24,14 @@ from tabulate import tabulate
 
 from cmflib import cmfquery
 from cmflib.cli.command import CmdBase
-from cmflib.cmf_exception_handling import (ArtifactNotFound,
-                                           DuplicateArgumentNotAllowed,
-                                           FileNotFound, MissingArgument,
-                                           MsgSuccess, PipelineNotFound)
+from cmflib.cmf_exception_handling import (
+    ArtifactNotFound,
+    DuplicateArgumentNotAllowed,
+    FileNotFound,
+    MissingArgument,
+    MsgSuccess,
+    PipelineNotFound,
+)
 
 
 class CmdArtifactsList(CmdBase):
