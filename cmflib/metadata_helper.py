@@ -86,6 +86,7 @@ def get_artifacts_by_id(
 
     except Exception as e:
         print('Failed to get artifact. Exception: "{}"'.format(str(e)), file=sys.stderr)
+        return []
 
 
 def put_artifact(store, artifact: metadata_store_pb2.Artifact):
@@ -98,7 +99,7 @@ def put_artifact(store, artifact: metadata_store_pb2.Artifact):
 
 
 def get_or_create_artifact_type(
-    store, type_name, properties: dict = None
+    store, type_name, properties: dict = {}
 ) -> metadata_store_pb2.ArtifactType:
     try:
         artifact_type = store.get_artifact_type(type_name=type_name)
@@ -113,7 +114,7 @@ def get_or_create_artifact_type(
 
 
 def get_or_create_execution_type(
-    store, type_name, properties: dict = None
+    store, type_name, properties: dict = {}
 ) -> metadata_store_pb2.ExecutionType:
     try:
         execution_type = store.get_execution_type(type_name=type_name)
@@ -128,7 +129,7 @@ def get_or_create_execution_type(
 
 
 def get_or_create_context_type(
-    store, type_name, properties: dict = None
+    store, type_name, properties: dict = {}
 ) -> metadata_store_pb2.ContextType:
     try:
         context_type = store.get_context_type(type_name=type_name)
@@ -160,9 +161,9 @@ def create_artifact_with_type(
     uri: str,
     name: str,
     type_name: str,
-    properties: dict = None,
-    type_properties: dict = None,
-    custom_properties: dict = None,
+    properties: dict = {},
+    type_properties: dict = {},
+    custom_properties: dict = {},
 ) -> metadata_store_pb2.Artifact:
     artifact_type = get_or_create_artifact_type(
         store=store,
@@ -184,8 +185,8 @@ def create_execution_with_type(
     store,
     type_name: str,
     name: str,
-    properties: dict = None,
-    type_properties: dict = None,
+    properties: dict = {},
+    type_properties: dict = {},
     custom_properties: t.Optional[t.Dict] = None,
     create_new_execution: bool = True,
 ) -> metadata_store_pb2.Execution:
@@ -224,9 +225,9 @@ def create_context_with_type(
     store,
     context_name: str,
     type_name: str,
-    properties: dict = None,
-    type_properties: dict = None,
-    custom_properties: dict = None,
+    properties: dict = {},
+    type_properties: dict = {},
+    custom_properties: dict = {},
 ) -> metadata_store_pb2.Context:
     # ! Context_name must be unique
     context_type = get_or_create_context_type(
@@ -262,9 +263,9 @@ def get_or_create_context_with_type(
     store,
     context_name: str,
     type_name: str,
-    properties: dict = None,
-    type_properties: dict = None,
-    custom_properties: dict = None,
+    properties: dict = {},
+    type_properties: dict = {},
+    custom_properties: dict = {},
 ) -> metadata_store_pb2.Context:
     try:
         context = get_context_by_name(store, context_name)
@@ -296,9 +297,9 @@ def create_new_execution_in_existing_context(
     execution_type_name: str,
     execution_name: str,
     context_id: int,
-    properties: dict = None,
-    execution_type_properties: dict = None,
-    custom_properties: dict = None,
+    properties: dict = {},
+    execution_type_properties: dict = {},
+    custom_properties: dict = {},
     create_new_execution: bool = True,
 ) -> metadata_store_pb2.Execution:
     execution = create_execution_with_type(
@@ -413,17 +414,17 @@ def associate_child_to_parent_context(
 
 def create_new_execution_in_existing_run_context(
     store,
-    execution_type_name: str = None,  # TRAINING EXECUTION
-    execution_name: str = None,
+    execution_type_name: str = "",  # TRAINING EXECUTION
+    execution_name: str = "",
     context_id: int = 0,  # TRAINING CONTEXT ASSOCIATED WITH THIS EXECUTION
-    execution: str = None,
+    execution: str = "",
     pipeline_id: int = 0,  # THE PARENT CONTEXT
-    pipeline_type: str = None,
-    git_repo: str = None,
-    git_start_commit: str = None,
+    pipeline_type: str = "",
+    git_repo: str = "",
+    git_start_commit: str = "",
     git_end_commit: str = "",
     python_env: str = "",
-    custom_properties: dict = None,
+    custom_properties: dict = {},
     create_new_execution: bool = True,
 ) -> metadata_store_pb2.Execution:
     mlmd_custom_properties = {}
@@ -483,11 +484,11 @@ def create_new_artifact_event_and_attribution(
     name: str,
     type_name: str,
     event_type: metadata_store_pb2.Event.Type,
-    properties: dict = None,
-    artifact_type_properties: dict = None,
-    custom_properties: dict = None,
+    properties: dict = {},
+    artifact_type_properties: dict = {},
+    custom_properties: dict = {},
     artifact_name_path: metadata_store_pb2.Event.Path = None,
-    milliseconds_since_epoch: int = None,
+    milliseconds_since_epoch: t.Optional[int] = None,
 ) -> metadata_store_pb2.Artifact:
     mlmd_properties = {}
     for property_name, property_value in (properties or {}).items():
@@ -617,3 +618,5 @@ def isIPv6(ip: str) -> bool:
     except Exception as e:
         print("Error: Exception:{}".format(str(e)), file=sys.stderr)
         sys.stderr.flush()
+        return False
+cmflib/dvc_wrapper.py

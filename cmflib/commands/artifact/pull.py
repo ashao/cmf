@@ -73,8 +73,7 @@ class CmdArtifactPull(CmdBase):
             if len(token) > 1:
                 # in case of metrics we have multiple ':' in its url
                 # concating remaining tokens after removing pipeline_name using ':' delimiter
-                token = ":".join(token)
-                return token
+                return ":".join(token)
             return "".join(token)
 
     def extract_repo_args(self, type: str, name: str, url: str, current_directory: str):
@@ -232,14 +231,14 @@ class CmdArtifactPull(CmdBase):
         if type(output) is not dict:
             raise CmfNotConfigured(output)
         """
-           There are multiple scenarios for cmf artifact pull 
+           There are multiple scenarios for cmf artifact pull
            Code checks if self.args.artifact_name is provided by user or not
            under these conditions there are two more conditions
-              1. if file is not .dir (single file) 
+              1. if file is not .dir (single file)
                    Download single file
               2. else file is .dir (directory)
                    download all files from directory
-                     
+
         """
         dvc_config_op = output
         if dvc_config_op["core.remote"] == "minio":

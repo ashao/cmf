@@ -49,7 +49,7 @@ class CmfConfig:
             sec_data = config_data[sec]
             for key in sec_data:
                 value = sec_data.get(key)
-                if sec == "neo4j" and key == "password":
+                if sec == "neo4j" and key == "password" and value:
                     encoded_pass = bytes(value, "utf-8")
                     value = base64.b64decode(encoded_pass).decode("utf-8")
                 key = f"{sec}-{key}"

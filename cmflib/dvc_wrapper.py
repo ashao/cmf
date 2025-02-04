@@ -23,15 +23,13 @@ import dvc.exceptions
 
 
 def check_git_remote() -> bool:
-    process = ""
-    commit = ""
     git_remote_configured = False
     try:
         process = subprocess.Popen(
             ["git", "remote", "show"], stdout=subprocess.PIPE, universal_newlines=True
         )
         # output = process.stdout.readline()
-        output, error = process.communicate(timeout=60)
+        output, _ = process.communicate(timeout=60)
 
         remote = output.strip()
         if remote:
@@ -39,6 +37,8 @@ def check_git_remote() -> bool:
     except Exception as err:
         process.kill()
         outs, errs = process.communicate()
+        print(outs, errs)
+        raise err
     return git_remote_configured
 
 

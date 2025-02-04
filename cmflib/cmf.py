@@ -96,10 +96,12 @@ class Cmf:
         Note that name is the unique identifier for a pipeline.
         If a pipeline already exist with the same name, the existing pipeline object is reused.
         custom_properties: Additional properties of the pipeline that needs to be stored.
-        graph: If set to true, the libray also stores the relationships in the provided graph database.
-        The following
-        variables should be set: `neo4j_uri` (graph server URI), `neo4j_user` (user name) and
-        `neo4j_password` (user password), e.g.:
+        graph: If set to true, the library also stores the relationships in the provided graph database.
+        The following variables should be set:
+        - `neo4j_uri` (graph server URI)
+        - neo4j_user` (user name)
+        - `neo4j_password` (user password)
+        e.g.:
         ```
         cmf init local --path /home/user/local-storage --git-remote-url https://github.com/XXX/exprepo.git --neo4j-user neo4j --neo4j-password neo4j
                               --neo4j-uri bolt://localhost:7687
@@ -237,9 +239,8 @@ class Cmf:
     def create_context(
         self, pipeline_stage: str, custom_properties: t.Optional[t.Dict] = None
     ) -> mlpb.Context:
-        """Create's a  context(stage).
-        Every call creates a unique pipeline stage.
-        Updates Pipeline_stage name.
+        """Creates a context(stage).
+        Every call creates a unique pipeline stage. Updates Pipeline_stage name.
         Example:
             ```python
             #Create context
