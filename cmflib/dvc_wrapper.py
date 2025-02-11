@@ -43,7 +43,6 @@ def check_git_remote() -> bool:
 
 
 def check_default_remote() -> bool:
-    process = ""
     commit = ""
     dvc_configured = False
     try:
@@ -108,8 +107,6 @@ def dvc_get_hash(folder: str, repo: str = "") -> str:
 
 def check_git_repo() -> bool:
 
-    process = ""
-    commit = ""
     is_git_repo = False
     try:
         process = subprocess.Popen(
@@ -121,7 +118,7 @@ def check_git_repo() -> bool:
         # output = process.stdout.readline()
         output, error = process.communicate(timeout=60)
 
-        is_git_repo = output.strip()
+        is_git_repo = output.strip() == "true"
     except Exception as err:
         process.kill()
         outs, errs = process.communicate()
@@ -130,8 +127,6 @@ def check_git_repo() -> bool:
 
 def git_checkout_new_branch(branch_name: str):
 
-    process = ""
-    commit = ""
     try:
         process = subprocess.Popen(
             ["git", "checkout", "-q", "-B", branch_name],
@@ -141,7 +136,6 @@ def git_checkout_new_branch(branch_name: str):
         # output = process.stdout.readline()
         output, error = process.communicate(timeout=60)
 
-        commit = output.strip()
         print(
             f"*** Note: CMF will check out a new branch in git to commit the metadata files ***\n"
             f"*** The checked out branch is {branch_name}. ***"
@@ -159,7 +153,6 @@ def git_checkout_new_branch(branch_name: str):
 
 
 def git_get_commit() -> str:
-    process = ""
     commit = ""
     try:
         process = subprocess.Popen(
@@ -181,7 +174,6 @@ def git_get_commit() -> str:
 
 def commit_dvc_lock_file(file_path: str, execution_id) -> str:
     commit = ""
-    process = ""
     try:
         process = subprocess.Popen(
             ["git", "add", file_path], stdout=subprocess.PIPE, universal_newlines=True
@@ -247,7 +239,6 @@ def git_commit(execution_id: str) -> str:
 
 def commit_output(folder: str, execution_id: str) -> str:
     commit = ""
-    process = ""
     try:
         if os.path.exists(os.getcwd() + "/" + folder):
             sub_dir_file = True
@@ -301,9 +292,6 @@ def commit_output(folder: str, execution_id: str) -> str:
 # Get the remote repo
 def git_get_repo() -> str:
     commit = ""
-    process = ""
-    output = ""
-    errs = ""
     try:
         process = subprocess.Popen(
             ["git", "remote", "-v"], stdout=subprocess.PIPE, universal_newlines=True
@@ -316,7 +304,7 @@ def git_get_repo() -> str:
         print(f"Unexpected {err}, {type(err)}")
         print(f"Unexpected {output}")
         print(f"Unexpected {errs}")
-    return commit.split()[1]
+    return commit.split()[1] if commit else commit
 
 
 # Initialise git with quiet option
