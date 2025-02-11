@@ -108,7 +108,7 @@ class MinioArtifacts:
 
         """"
         if object_name ends with .dir - it is a directory.
-        we download .dir object with 'temp_dir' and remove 
+        we download .dir object with 'temp_dir' and remove
         this after all the files from this .dir object is downloaded.
         """
 
@@ -138,9 +138,9 @@ class MinioArtifacts:
             we need to remove the hash of the .dir from the object_name
             which will leave us with the artifact repo path
             """
-            repo_path = object_name.split("/")
-            repo_path = repo_path[: len(repo_path) - 2]
-            repo_path = "/".join(repo_path)
+            split_repo_path = object_name.split("/")
+            split_repo_path = split_repo_path[: len(split_repo_path) - 2]
+            repo_path = "/".join(split_repo_path)
 
             obj = True
             for file_info in tracked_files:

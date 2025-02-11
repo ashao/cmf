@@ -16,7 +16,7 @@
 
 import os
 
-from dvc.api import DVCFileSystem # type: ignore[import-untyped]
+from dvc.api import DVCFileSystem
 
 
 class LocalArtifacts:

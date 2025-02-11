@@ -53,7 +53,6 @@ class SSHremoteArtifacts:
             # creates subfolders needed as per artifacts' folder structure
             os.makedirs(dir_path, mode=0o777, exist_ok=True)
 
-        response = ""
         abs_download_loc = os.path.abspath(
             os.path.join(current_directory, download_loc)
         )
@@ -96,14 +95,13 @@ class SSHremoteArtifacts:
             # creates subfolders needed as per artifacts' folder structure
             os.makedirs(dir_path, mode=0o777, exist_ok=True)
 
-        response = ""
         abs_download_loc = os.path.abspath(
             os.path.join(current_directory, download_loc)
         )
 
         """"
         if object_name ends with .dir - it is a directory.
-        we download .dir object with 'temp_dir' and remove 
+        we download .dir object with 'temp_dir' and remove
         this after all the files from this .dir object is downloaded.
         """
         # in case of .dir, abs_download_loc is a absolute path for a folder
