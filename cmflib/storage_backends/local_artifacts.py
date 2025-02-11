@@ -16,7 +16,7 @@
 
 import os
 
-from dvc.api import DVCFileSystem
+from dvc.api import DVCFileSystem # type: ignore[import-untyped]
 
 
 class LocalArtifacts:
@@ -107,7 +107,7 @@ class LocalArtifacts:
 
         """"
         if object_name ends with .dir - it is a directory.
-        we download .dir object with 'temp_dir' and remove 
+        we download .dir object with 'temp_dir' and remove
         this after all the files from this .dir object is downloaded.
         """
         # in case of .dir, download_loc is a absolute path for a folder
@@ -129,7 +129,7 @@ class LocalArtifacts:
                 os.remove(temp_dir)
 
             """
-            object_name = "files/md5/9b/9a458ac0b534f088a47c2b68bae479.dir" 
+            object_name = "files/md5/9b/9a458ac0b534f088a47c2b68bae479.dir"
             contains the path of the .dir on the artifact repo
             we need to remove the hash of the .dir from the object_name
             which will leave us with the artifact repo path

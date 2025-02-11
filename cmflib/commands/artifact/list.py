@@ -90,8 +90,8 @@ class CmdArtifactsList(CmdBase):
 
             # Display the table.
             table = tabulate(
-                records_per_page,
-                headers=df.columns,
+                records_per_page, # type: ignore[arg-type]
+                headers=df.columns.to_list(),
                 tablefmt="grid",
                 showindex=False,
             )

@@ -41,18 +41,16 @@ def is_git_repo():
 
 
 def get_python_env() -> str:
-    installed_packages = ""
     python_version = sys.version
-    packages = ""
     # check if conda is installed
     if is_conda_installed():
-        import conda
+        import conda # type: ignore[import-not-found]
 
         # List all installed packages and their versions
         data = list_conda_packages_json()
         transformed_result = [f"{entry['name']}=={entry['version']}" for entry in data]
         installed_packages = transformed_result
-        packages = f"Conda: Python {python_version}: {installed_packages}"
+        return f"Conda: Python {python_version}: {installed_packages}"
     else:
         # pip
         try:
@@ -61,11 +59,12 @@ def get_python_env() -> str:
             # List all installed packages and their versions
             installed_packages_generator = freeze.freeze()
             installed_packages = list(installed_packages_generator)
-            packages = f"Python {python_version}: {installed_packages}"
+            return f"Python {python_version}: {installed_packages}"
         except ImportError:
             print("Pip is not installed.")
-    return packages
-
+    raise RuntimeError(
+        "Packages could not be determined because neither pip nor conda were found"
+    )
 
 def change_dir(cmf_init_path):
     logging_dir = os.getcwd()
@@ -110,7 +109,7 @@ def list_conda_packages_json():
 def generate_osdf_token(key_id, key_path, key_issuer) -> str:
 
     # for SciToken Generation & Validation
-    import scitokens
+    import scitokens # type: ignore[import-untyped]
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives import serialization
 

@@ -38,12 +38,13 @@ dev = [
 ]
 static-checking = [
 	"mypy==1.14.1",
-	"types-paramiko",
-	"types-requests",
-	"types-protobuf",
-	"types-tabulate",
-	"types-pyyaml",
 	"pandas-stubs",
+	"types-boto3",
+	"types-paramiko",
+	"types-protobuf",
+	"types-pyyaml",
+	"types-requests",
+	"types-tabulate",
 ]
 
 [tool.black]
@@ -67,3 +68,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
+
+[[tool.mypy.overrides]]
+module = "dvc.*"
+ignore_missing_imports = true
